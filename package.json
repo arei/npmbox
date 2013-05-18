@@ -1,0 +1,36 @@
+{
+  "author": "Glen R. Goodwin (http://www.arei.net)",
+  "name": "npmbox",
+  "keywords": [ "npm","npm utility","npm pack","npm package","npm utilities","npm archive","npm unpack","npm zip","npm unzip","unpack","pack","npmbox","npmunbox","zip","unzip","offline","npm offline","offline install","install","install offline","npm install","npm install offline","npm offline install","box","unbox" ],
+  "description": "npm addon utility for creating and installing from an archive file of an npm install, including dependencies.",
+  "version": "0.1.3",
+  "homepage": "http://github.com/arei/npmbox",
+  "bugs": {
+        "url": "http://github.com/arei/npmbox/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/arei/npmbox/blob/master/LICENSE.txt"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/arei/npmbox.git"
+  },
+  "main": "npmboxxer.js",
+  "bin": {
+    "npmbox": "./bin/npmbox",
+    "npmunbox": "./bin/npmunbox"
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "dependencies": {
+    "npm": "=1.2.19",
+    "tar.gz": "=0.1.1",
+    "rmdir": "=1.0.0"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {}
+}
