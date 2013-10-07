@@ -72,6 +72,15 @@
 	var unbox = function(source) {
 		var target = source.replace(/\.npmbox$/,"");
 
+		if (!fs.existsSync(source)) {
+			source = path.resolve(source+".npmbox");
+			if (!fs.existsSync(source)) {
+				console.log("Source not found: "+source);
+				exit(203);
+				return;
+			}
+		}
+
 		console.log("Unboxing "+source);
 		if (!fs.existsSync(cache)) fs.mkdirSync(cache);
 
@@ -86,7 +95,11 @@
 				'no-registry': true,
 				global: false,
 				optional: true,
-				force: true,
+				force: false,
+				'fetch-retries': 0,
+				'fetch-retry-factor': 0,
+				'fetch-retry-mintimeout': 1,
+				'fetch-retry-maxtimeout': 2,
 				loglevel: "silent"
 			},function(err){
 				if (err) {
