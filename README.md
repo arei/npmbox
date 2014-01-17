@@ -7,7 +7,7 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## Usage of `npmbox`
 
-Given some package, like `express` this command will create a archive file of that package and all of its dependencies, such that a npmunbox of that archive file will install express and all of its dependencies. 
+Given some package, like `express` this command will create a archive file of that package and all of its dependencies, such that a npmunbox of that archive file will install express and all of its dependencies.
 
 Usage:
 
@@ -15,7 +15,7 @@ Usage:
 	npmbox <package>
 	npmbox <package> <package> ...
 
-You must specify at least one package. 
+You must specify at least one package.
 
 You can specify more than one package and a separate archive will be created for each specified.
 
@@ -48,13 +48,13 @@ On the system you want to install npmbox to, do the following:
 1). Create a new directory
 
 	mkdir somedir
-	
-2). Change to it: 
+
+2). Change to it:
 
 	cd somedir
 
 3). Untar the .npmbox file.  This will create the .npmbox-cache folder.
- 
+
 	tar -xvf npmbox.npmbox
 
 4). Install npmbox globally using the following command:
@@ -66,5 +66,4 @@ Once npmbox is installed globally you can use it to install other .npmbox files:
 ## TO DO
 
 - Verify versions work when specifying package.
-- Add --global switch for npmunbox.  In fact, pass all -- switches through to the underlying npm command.
 - Right now specifying multiple packages creates multiple .npmbox files.  Make it create just one .npmbox file by default.  Maybe allow a switch (-multi) to make it generate multiple.
