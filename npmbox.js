@@ -5,21 +5,36 @@
 (function(){
 	var box = require("./npmboxxer.js").box;
 
-	var args = process.argv;
-	if (args.length>0 && (args[0]==="node" || args[0]==="node.exe")) args.shift();
-	if (args.length>0 && /npmbpx\.js$/.test(args[0])) args.shift();
-	if (args.length>0 && /npmbox[\/\\]bin[\/\\]npmbox$/.test(args[0])) args.shift();
-	if (args.length<1 || args[0].toLowerCase()==="--help") {
+	var argv = require("optimist")
+		.boolean(["v","verbose"])
+		.argv;
+
+	var args = argv._;
+	if (args.length<1 || argv.help) {
 		console.log("npmbox - Create an archive for offline installation of the given package.");
 		console.log("");
-		console.log("npmbox --help");
-		console.log("npmbox <package>");
-		console.log("npmbox <package> <package>...");
+		console.log("Usage: ");
+		console.log("");
+		console.log("  npmbox --help");
+		console.log("  npmbox [options] <package> <package>...");
+		console.log("");
+		console.log("Options:");
+		console.log("");
+		console.log("  -v, -verbose         Shows npm output which is normally hidden.");
+		console.log("");
 		process.exit(0);
 	}
 
+	var options = {
+		verbose: argv.v || argv.verbose || false,
+		global: argv.g || argv.global || false
+	};
+
 	args.forEach(function(source){
-		box(source);
+		if (!!source.match(/^\-/)) return;
+
+		box(source,options);
+
 		console.log("");
 	});
 

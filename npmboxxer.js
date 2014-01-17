@@ -10,8 +10,8 @@
 	var rmdir = require("rmdir");
 
 	var cwd = process.cwd();
-	var cache = path.resolve(".npmbox-cache");
-	var work = path.resolve(".npmbox-work");
+	var cache = path.resolve(cwd,".npmbox-cache");
+	var work = path.resolve(cwd,".npmbox-work");
 
 	var cleanCache = function(cb) {
 		if (fs.existsSync(cache)) rmdir(cache,cb);
@@ -32,8 +32,8 @@
 		});
 	};
 
-	var box = function(source) {
-		var target = path.resolve(source+".npmbox");
+	var box = function(source,options) {
+		var target = path.resolve(cwd,source+".npmbox");
 
 		if (!fs.existsSync(cache)) fs.mkdirSync(cache);
 		if (!fs.existsSync(work)) fs.mkdirSync(work);
@@ -45,7 +45,7 @@
 			global: true,
 			optional: true,
 			force: true,
-			loglevel: "silent"
+			loglevel: options.verbose ? "http" : "silent"
 		},function(err){
 			if (err) {
 				console.log("\nUnable to load npm");
@@ -73,11 +73,11 @@
 		});
 	};
 
-	var unbox = function(source) {
+	var unbox = function(source,options) {
 		var target = source.replace(/\.npmbox$/,"");
 
 		if (!fs.existsSync(source)) {
-			source = path.resolve(source+".npmbox");
+			source = path.resolve(cwd,source+".npmbox");
 			if (!fs.existsSync(source)) {
 				console.log("Source not found: "+source);
 				exit(203);
@@ -97,14 +97,14 @@
 			npm.load({
 				cache: cache,
 				'no-registry': true,
-				global: false,
+				global: options.global ? true : false,
 				optional: true,
 				force: false,
 				'fetch-retries': 0,
 				'fetch-retry-factor': 0,
 				'fetch-retry-mintimeout': 1,
 				'fetch-retry-maxtimeout': 2,
-				loglevel: "silent"
+				loglevel: options.verbose ? "http" : "silent"
 			},function(err){
 				if (err) {
 					console.log("\nUnable to load npm");
