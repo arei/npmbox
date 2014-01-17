@@ -65,7 +65,6 @@ Once npmbox is installed globally you can use it to install other .npmbox files:
 
 ## TO DO
 
-- Verify working .bin files on linux
 - Verify versions work when specifying package.
 - Add --global switch for npmunbox.  In fact, pass all -- switches through to the underlying npm command.
 - Right now specifying multiple packages creates multiple .npmbox files.  Make it create just one .npmbox file by default.  Maybe allow a switch (-multi) to make it generate multiple.
