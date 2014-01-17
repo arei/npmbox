@@ -1,8 +1,7 @@
-/*  npmunbox - Glen R. Goodwin (@areinet)
-	
-	Extracts an .npmbox file and installs the contained package.
+// npmbox by Glen R. Goodwin (@areinet)
+// https://github.com/arei/npmbox.git
 
-*/
+// Extracts an .npmbox file and installs the contained package.
 (function(){
 	var unbox = require("./npmboxxer.js").unbox;
 
@@ -23,5 +22,5 @@
 		unbox(source);
 		console.log("");
 	});
-	
+
 })();

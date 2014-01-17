@@ -1,3 +1,7 @@
+// npmbox by Glen R. Goodwin (@areinet)
+// https://github.com/arei/npmbox.git
+
+// Shared code for npmbox/npmunbox
 (function(){
 	var npm = require("npm");
 	var fs = require("fs");
@@ -33,7 +37,7 @@
 
 		if (!fs.existsSync(cache)) fs.mkdirSync(cache);
 		if (!fs.existsSync(work)) fs.mkdirSync(work);
-		
+
 		console.log("Downloading package "+source+"...");
 		npm.load({
 			cache: cache,
@@ -49,7 +53,7 @@
 			}
 			npm.commands.install([source],function(err){
 				if (err) {
-					console.log("\nnpm Error: "+err);					
+					console.log("\nnpm Error: "+err);
 					exit(101);
 				}
 
@@ -63,10 +67,10 @@
 					console.log("\nCleaning up...");
 
 					exit(0);
-				});				
+				});
 
 			});
-		});	
+		});
 	};
 
 	var unbox = function(source) {
@@ -115,13 +119,13 @@
 					console.log("\nInstalled "+target+".");
 					exit(0);
 				});
-			});			
-		});		
+			});
+		});
 	}
 
 	module.exports = {
 		box: box,
 		unbox: unbox
 	};
-	
+
 })();

@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// npmbox by Glen R. Goodwin (@areinet)
+// https://github.com/arei/npmbox.git
+
 var path = require('path');
 var fs = require('fs');
 var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../');

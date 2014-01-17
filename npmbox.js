@@ -1,8 +1,7 @@
-/*  npmbox - Glen R. Goodwin (@areinet)
-	
-	Creates an archive "box" of an npm package and its dependencies.
+// npmbox by Glen R. Goodwin (@areinet)
+// https://github.com/arei/npmbox.git
 
-*/
+// Creates an archive "box" of an npm package and its dependencies.
 (function(){
 	var box = require("./npmboxxer.js").box;
 
