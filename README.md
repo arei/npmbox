@@ -9,11 +9,16 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 Given some package, like `express` this command will create a archive file of that package and all of its dependencies, such that a npmunbox of that archive file will install express and all of its dependencies.
 
-Usage:
+	npmbox - Create an archive for offline installation of the given package.
 
-	npmbox --help
-	npmbox <package>
-	npmbox <package> <package> ...
+	Usage:
+
+  		npmbox --help
+  		npmbox [options] <package> <package>...
+
+	Options:
+
+  		-v, -verbose         Shows npm output which is normally hidden.
 
 You must specify at least one package.
 
@@ -25,11 +30,17 @@ npmbox files end with the .npmbox extension.
 
 Given some .npmbox file (must end with the .npmbox extension), installs the contents and all of it dependencies.
 
-Usage:
+	npmunbox - Extracts a .npmbox file and installs the contained package.
 
-	npmunbox --help
-	npmunbox <npmbox-file>
-	npmunbox <npmbox-file> <npmbox-file> ...
+	Usage:
+
+		npmunbox --help
+		npmunbox [options] <nmpbox-file> <npmbox-file>...
+
+	Options:
+
+		-v, -verbose         Shows npm output which is normally hidden.
+		-g, -global          Installs package globally as if --global was passed to npm.
 
 You must specify at least one file.
 
