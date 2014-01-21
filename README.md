@@ -86,9 +86,9 @@ or
 
 4). Untar the .npmbox file.  This will create the .npmbox-cache folder.
 
-	tar -xvf npmbox.npmbox
+	tar -xvfo npmbox.npmbox
 
-5). Install npmbox globally using the following command:
+5). Install npmbox globally using the following command.  **Note this command may require root access/sudo in order to correctly install.**
 
 	npm install --global --cache ./.npmbox-cache --optional --no-registry --fetch-retries 0 --fetch-retry-factor 0 --fetch-retry-mintimeout 1 --fetch-retry-maxtimeout 2 npmbox
 
