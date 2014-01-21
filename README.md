@@ -54,7 +54,19 @@ A particular use case with npmunbox comes up fairly often: **how do I use npmbox
 
 These instructions assume that you have already created a .npmbox file on npmbox using `npmbox npmbbox`
 
-On the system you want to install npmbox to, do the following:
+**On a system that does have access to the Internet, you need to do the following:**
+
+1). If npmbox is not globally installed on your online system, do so now:
+
+	npm install -g npmbox
+
+2). In a folder in which you can read/write:
+
+	npmbox npmbox
+
+3). Copy the resulting `npmbox.npmbox` file to you offline system in whatever manner allowed to you,  This could involve coping to movable media and transfering that way, however you would do it.
+
+**On the system you want to install npmbox to, do the following:**
 
 1). Create a new directory
 
@@ -64,15 +76,25 @@ On the system you want to install npmbox to, do the following:
 
 	cd somedir
 
-3). Untar the .npmbox file.  This will create the .npmbox-cache folder.
+3). Copy the npmbox.npmbox folder into this directory.
+
+	cp /media/usb/npmbox.npmbox .
+
+or
+
+	copy E:\npmbox.npmbox .
+
+4). Untar the .npmbox file.  This will create the .npmbox-cache folder.
 
 	tar -xvf npmbox.npmbox
 
-4). Install npmbox globally using the following command:
+5). Install npmbox globally using the following command:
 
-	npm install --global --cache ./.npmbox-cache --optional --no-registr --fetch-retries 0 --fetch-retry-factor 0 --fetch-retry-mintimeout 1 --fetch-retry-maxtimeout 2 npmbox
+	npm install --global --cache ./.npmbox-cache --optional --no-registry --fetch-retries 0 --fetch-retry-factor 0 --fetch-retry-mintimeout 1 --fetch-retry-maxtimeout 2 npmbox
 
-Once npmbox is installed globally you can use it to install other .npmbox files: `npmunbox blah`
+Once npmbox is installed globally you can use it to install other .npmbox files:
+
+	npmunbox blah
 
 ## TO DO
 
