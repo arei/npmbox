@@ -50,11 +50,13 @@
 			if (err) {
 				console.log("\nUnable to load npm");
 				exit(100);
+				return;
 			}
 			npm.commands.install([source],function(err){
 				if (err) {
 					console.log("\nnpm Error: "+err);
 					exit(101);
+					return;
 				}
 
 				console.log("\nCreating archive "+target+"...");
@@ -92,6 +94,7 @@
 			if (err) {
 				console.log("Error reading "+source);
 				exit(200);
+				return;
 			}
 			console.log("Installing "+target);
 			npm.load({
@@ -109,11 +112,13 @@
 				if (err) {
 					console.log("\nUnable to load npm");
 					exit(201);
+					return;
 				}
 				npm.commands.install([target],function(err){
 					if (err) {
 						console.log("\nUnable to install "+source+" from "+target);
 						exit(202);
+						return;
 					}
 
 					console.log("\nInstalled "+target+".");
