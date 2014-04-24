@@ -31,12 +31,51 @@
 		global: argv.g || argv.global || false
 	};
 
-	args.forEach(function(source){
-		if (!!source.match(/^\-/)) return;
+	var sources = args;
+	var targets = [];
+	var errors = [];
 
-		unbox(source,options);
+	var complete = function() {
+		if (targets && targets.length>0) {
+			console.log("npmunbox installed...");
+			targets.forEach(function(target){
+				console.log("  "+target);
+			});
+			console.log("");
+		}
 
-		console.log("");
+		if (errors && errors.length>0) {
+			console.log("npmunbox had the following errors...");
+			errors.forEach(function(error){
+				console.log("  "+error);
+			});
+			console.log("");
+		}
+
+		process.reallyExit(errors.length);
+	};
+
+	var unboxDone = function(err,target) {
+		if (err) errors.push(err);
+		else targets.push(target);
+		unboxNext();
+	};
+
+	var unboxNext = function() {
+		var source = sources.shift();
+		if (!source) complete();
+
+		unboxExecute(source);
+	};
+
+	var unboxExecute = function(source) {
+		unbox(source,options,unboxDone);
+	}
+
+	sources = sources.filter(function(source){
+		return !!source;
 	});
 
+	if (sources && sources.length>0) unboxNext();
+	else complete();
 })();

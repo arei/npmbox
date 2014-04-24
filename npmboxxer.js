@@ -7,122 +7,142 @@
 	var fs = require("fs");
 	var path = require("path");
 	var targz = require("tar.gz");
-	var rmdir = require("rmdir");
+	var rimraf = require("rimraf");
+	var is = require("is");
 
 	var cwd = process.cwd();
 	var cache = path.resolve(cwd,".npmbox-cache");
 	var work = path.resolve(cwd,".npmbox-work");
 
-	var cleanCache = function(cb) {
-		if (fs.existsSync(cache)) rmdir(cache,cb);
-		else cb();
-	}
-
-	var cleanWork = function(cb) {
-		if (fs.existsSync(work)) rmdir(work,cb);
-		else cb();
-	}
-
-	var exit = function(code) {
+	var cleanCache = function(callback) {
 		process.chdir(cwd);
+
+		if (fs.existsSync(cache)) rimraf(cache,callback);
+		else callback();
+	};
+
+	var cleanWork = function(callback) {
+		process.chdir(cwd);
+
+		if (fs.existsSync(work)) rimraf(work,callback);
+		else callback();
+	};
+
+	var cleanAll = function(callback) {
+		console.log("\nCleaning Up...");
 		cleanCache(function(){
 			cleanWork(function(){
-				process.exit(code);
+				console.log("");
+				callback();
 			});
 		});
 	};
 
-	var box = function(source,options) {
+	var npmInit = function(options,callback) {
+		npm.load(options,callback);
+	};
+
+	var npmInstall = function(source,callback) {
+		if (!is.array(source)) source = [source];
+		npm.commands.install(source,callback);
+	};
+
+	var tarCreate = function(source,target,callback) {
+		new targz(6,6,false).compress(source,target,callback);
+	};
+
+	var tarExtract = function(source,target,callback) {
+		new targz().extract(source,target,callback);
+	};
+
+	var box = function(source,options,callback) {
 		var target = path.resolve(cwd,source+".npmbox");
 
 		if (!fs.existsSync(cache)) fs.mkdirSync(cache);
 		if (!fs.existsSync(work)) fs.mkdirSync(work);
 
-		console.log("Downloading package "+source+"...");
-		npm.load({
+		var npmoptions = {
 			cache: cache,
 			prefix: work,
 			global: true,
 			optional: true,
 			force: true,
-			loglevel: options.verbose ? "http" : "silent"
-		},function(err){
+			loglevel: options && options.verbose ? "http" : "silent"
+		};
+
+		npmInit(npmoptions,function(err){
 			if (err) {
-				console.log("\nUnable to load npm");
-				exit(100);
+				cleanAll(callback.bind(this,"Unable to load npm"));
 				return;
 			}
-			npm.commands.install([source],function(err){
+
+			console.log("Downloading package "+source+"...");
+			npmInstall(source,function(err){
 				if (err) {
-					console.log("\nnpm Error: "+err);
-					exit(101);
-					return;
+					cleanAll(callback.bind(this,"npm Error: "+err));
+					return
 				}
 
 				console.log("\nCreating archive "+target+"...");
-				new targz(6,6,false).compress(cache,target,function(err){
+				tarCreate(cache,target,function(err){
 				    if(err) {
-				    	console.log("\nError writing "+target);
-				    	exit(102);
+						cleanAll(callback.bind(this,"Error writing "+target));
+				    	return;
 				    }
 
-					console.log("\nCleaning up...");
-
-					exit(0);
+					cleanAll(callback.bind(this,null,target));
 				});
-
 			});
 		});
 	};
 
-	var unbox = function(source,options) {
+	var unbox = function(source,options,callback) {
 		var target = source.replace(/\.npmbox$/,"");
+
+		var npmoptions = {
+			cache: cache,
+			'no-registry': true,
+			global: options.global ? true : false,
+			optional: true,
+			force: false,
+			'fetch-retries': 0,
+			'fetch-retry-factor': 0,
+			'fetch-retry-mintimeout': 1,
+			'fetch-retry-maxtimeout': 2,
+			loglevel: options.verbose ? "http" : "silent"
+		};
 
 		if (!fs.existsSync(source)) {
 			source = path.resolve(cwd,source+".npmbox");
 			if (!fs.existsSync(source)) {
-				console.log("Source not found: "+source);
-				exit(203);
+				callback("Source not found: "+source);
 				return;
 			}
 		}
 
-		console.log("Unboxing "+source);
 		if (!fs.existsSync(cache)) fs.mkdirSync(cache);
 
-		new targz().extract(source,".",function(err){
+		console.log("Extracting archive "+target+"...");
+		tarExtract(source,".",function(err){
 			if (err) {
-				console.log("Error reading "+source);
-				exit(200);
+				cleanAll(callback.bind(this,"Error reading "+source));
 				return;
 			}
-			console.log("Installing "+target);
-			npm.load({
-				cache: cache,
-				'no-registry': true,
-				global: options.global ? true : false,
-				optional: true,
-				force: false,
-				'fetch-retries': 0,
-				'fetch-retry-factor': 0,
-				'fetch-retry-mintimeout': 1,
-				'fetch-retry-maxtimeout': 2,
-				loglevel: options.verbose ? "http" : "silent"
-			},function(err){
+
+			npmInit(npmoptions,function(err){
 				if (err) {
-					console.log("\nUnable to load npm");
-					exit(201);
+					cleanAll(callback.bind(this,"Unable to load npm"));
 					return;
 				}
-				npm.commands.install([target],function(err){
+
+				console.log("Installing "+target+"...");
+				npmInstall([target],function(err){
 					if (err) {
-						console.log("\nUnable to install "+source+" from "+target);
-						exit(202);
+						cleanAll(callback.bind(this,"Unable to install "+source+" from "+target));
 						return;
 					}
 
-					console.log("\nInstalled "+target+".");
-					exit(0);
+					cleanAll(callback.bind(this,null,target));
 				});
 			});
 		});

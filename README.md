@@ -98,5 +98,4 @@ Once npmbox is installed globally you can use it to install other .npmbox files:
 
 ## TO DO
 
-- Verify versions work when specifying package.
 - Right now specifying multiple packages creates multiple .npmbox files.  Make it create just one .npmbox file by default.  Maybe allow a switch (-multi) to make it generate multiple.

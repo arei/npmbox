@@ -30,12 +30,51 @@
 		global: argv.g || argv.global || false
 	};
 
-	args.forEach(function(source){
-		if (!!source.match(/^\-/)) return;
+	var sources = args;
+	var targets = [];
+	var errors = [];
 
-		box(source,options);
+	var complete = function() {
+		if (targets && targets.length>0) {
+			console.log("npmbox created...");
+			targets.forEach(function(target){
+				console.log("  "+target);
+			});
+			console.log("");
+		}
 
-		console.log("");
+		if (errors && errors.length>0) {
+			console.log("npmbox had the following errors...");
+			errors.forEach(function(error){
+				console.log("  "+error);
+			});
+			console.log("");
+		}
+
+		process.reallyExit(errors.length);
+	};
+
+	var boxDone = function(err,target) {
+		if (err) errors.push(err);
+		else targets.push(target);
+		boxNext();
+	};
+
+	var boxNext = function() {
+		var source = sources.shift();
+		if (!source) complete();
+
+		boxExecute(source);
+	};
+
+	var boxExecute = function(source) {
+		box(source,options,boxDone);
+	}
+
+	sources = sources.filter(function(source){
+		return !!source;
 	});
 
+	if (sources && sources.length>0) boxNext();
+	else complete();
 })();
