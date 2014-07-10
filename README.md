@@ -1,6 +1,8 @@
 npmbox
 -------
 
+UPDATE July 10 2014: Just two quick notes... 1). It looks like npm inc is going to start working toward providing us a solution or at least the tools to create a better solution at some point in the future.  Very good news indeed.  Read more at http://blog.npmjs.org/post/91303926460/npm-cli-roadmap-a-periodic-update.  2). About 6 weeks ago NPM removed the --no-registry switch which npmbox was dependant on.  I believe there are some workarounds, but I have not had time to research this nor what version of npm specifically removed it. Hopefully I will get some free time soon and can address it or someone else will submit a pull request and we can all move forward. In the meantime, npmbox may have limited usability.
+
 [![Build Status](https://travis-ci.org/arei/npmbox.svg)](https://travis-ci.org/arei/npmbox)
 
 npm addon utility for creating and installing from an archive file of an npm install, including dependencies.  This lets you create a "box" of an installable package and move it to an offline system that will only install from that box.
