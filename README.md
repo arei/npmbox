@@ -1,7 +1,12 @@
 npmbox
 -------
 
-UPDATE July 10 2014: Just two quick notes... 1). It looks like npm inc is going to start working toward providing us a solution or at least the tools to create a better solution at some point in the future.  Very good news indeed.  Read more at http://blog.npmjs.org/post/91303926460/npm-cli-roadmap-a-periodic-update.  2). About 6 weeks ago NPM removed the --no-registry switch which npmbox was dependant on.  I believe there are some workarounds, but I have not had time to research this nor what version of npm specifically removed it. Hopefully I will get some free time soon and can address it or someone else will submit a pull request and we can all move forward. In the meantime, npmbox may have limited usability.
+UPDATE September 19,2014: Just two quick notes... 1). Got a awesome patch today from @jamiemcconnell that fixes
+the --no-registry error. Everyone should update to v1.0.0 as soon as possible. He also updated the docs section about
+running npmbox without npmbox installed below. A massive fix from an awesome dude.  Jamie, the beer is on me should
+either of us transcend the pond at some point. 2). npm 2.0.0 shipped
+today and I look forward to taking a look at integrating npmbox over to using npm 2.0.0.  That said, npmbox will only
+work using npm 1.x.x for the time being.
 
 [![Build Status](https://travis-ci.org/arei/npmbox.svg)](https://travis-ci.org/arei/npmbox)
 
