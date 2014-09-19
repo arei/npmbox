@@ -101,7 +101,7 @@
 
 		var npmoptions = {
 			cache: cache,
-			'no-registry': true,
+			'cache-min': 999999,
 			global: options.global ? true : false,
 			optional: true,
 			force: false,
