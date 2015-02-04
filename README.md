@@ -50,8 +50,6 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
 		-s, -silent          Shows no output whatsoever.
 		-g, -global          Installs package globally as if --global was passed to npm.
 
-		Additionally, most npm double dash (aka --) arguments
-		should pass through.
 
 You must specify at least one file.
 
