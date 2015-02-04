@@ -232,7 +232,9 @@
 		var install = function() {
 			if (!options.silent) console.log("Installing "+target+"...");
 
-			npmInstall([target],function(err){
+			var packageName = path.basename(target);
+
+			npmInstall([packageName],function(err){
 				if (err) return done(err);
 				done();
 			});
