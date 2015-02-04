@@ -95,7 +95,7 @@ or
 
 	tar -xvf npmbox.npmbox
 
-5). Install npmbox globally using the following command.  **Notes: You must be using npm 1.4.28 or later! Also, this command may require root access/sudo in order to correctly install.**
+5). Install npmbox globally using the following command.
 
 	npm install --global --cache ./.npmbox.cache --optional --cache-min 99999 --fetch-retries 0 --fetch-retry-factor 0 --fetch-retry-mintimeout 1 --fetch-retry-maxtimeout 2 npmbox
 
