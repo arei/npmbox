@@ -40,7 +40,6 @@
 	};
 
 	var tarCreate = function(source,target,callback) {
-		console.log("  Packing "+target+"...");
 		new targz(6,6,false).compress(source,target,callback);
 	};
 
@@ -54,7 +53,7 @@
 
 	var npmInstall = function(source,callback) {
 		if (!is.array(source)) source = [source];
-		npm.commands.install(".",source,callback);
+		npm.commands.install(source,callback);
 	};
 
 	var npmDependencies = function(packageName,options,callback) {
@@ -70,7 +69,10 @@
 			});
 			if (pending.length>0) return;
 
-			callback(null,Object.keys(results));
+			var deps = Object.keys(results);
+			deps = deps.sort();
+
+			callback(null,deps);
 		};
 
 		var lookup = function(packageName) {
@@ -84,33 +86,41 @@
 			if (!options.silent) console.log("  Querying "+packageName);
 
 			npm.commands.view(args,true,function(err,deps){
+				if (err && err.statusCode && err.statusCode===404) return done(packageName);
 				if (err) return callback(err);
 				if (!deps) return callback("Package '"+packageName+"' was not found in npm.");
 
-				var found = Object.keys(deps)[0];
-				if (!found) return callback("Erroc occured reading npm info for '"+packageName+"' packageName.");
+				var found = Object.keys(deps).slice(-1)[0]; // we want the last entry.
+				if (found) {
+					var fullname = packageName.split(/@/g)[0] || packageName;
+					fullname += "@"+found;
+					results[fullname] = true;
+					console.log(1,packageName+" >>> "+fullname);
 
-				var fullname = packageName.split(/@/g)[0] || packageName;
-				fullname += "@"+found;
-				results[fullname] = true;
+					var children = [];
+					if (deps[found].dependencies) {
+						Object.keys(deps[found].dependencies).forEach(function(key){
+							var value = deps[found].dependencies[key];
+							if (key && value) children.push(key+"@"+value);
+						});
+					}
+					if (deps[found].optionalDependencies) {
+						Object.keys(deps[found].optionalDependencies).forEach(function(key){
+							var value = deps[found].optionalDependencies[key];
+							if (key && value) children.push(key+"@"+value);
+						});
+					}
+					// if (deps[found].devDependencies) {
+					// 	Object.keys(deps[found].devDependencies).forEach(function(key){
+					// 		var value = deps[found].devDependencies[key];
+					// 		if (key && value) children.push(key+"@"+value);
+					// 	});
+					// }
 
-				var children = [];
-				if (deps[found].dependencies) {
-					Object.keys(deps[found].dependencies).forEach(function(key){
-						var value = deps[found].dependencies[key];
-						if (key && value) children.push(key+"@"+value);
+					children.forEach(function(childPackageName){
+						lookup(childPackageName);
 					});
 				}
-				if (deps[found].optionalDependencies) {
-					Object.keys(deps[found].optionalDependencies).forEach(function(key){
-						var value = deps[found].optionalDependencies[key];
-						if (key && value) children.push(key+"@"+value);
-					});
-				}
-
-				children.forEach(function(childPackageName){
-					lookup(childPackageName);
-				});
 
 				done(packageName);
 			});
@@ -165,12 +175,14 @@
 		var done = function(err) {
 			var args = arguments;
 			cleanAll(function(){
-				if (!err) console.log("  Done.");
+				if (!err && !options.silent) console.log("  Done.");
 				callback.apply(null,args);
 			});
 		};
 
 		var pack = function() {
+			if (!options.silent) console.log("  Packing "+target+"...");
+
 			tarCreate(cache,target,function(err){
 				if (err) return done(err);
 				done();

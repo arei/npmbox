@@ -27,15 +27,14 @@ if (args.length<1 || argv.help) {
 	console.log("  -s, -silent          Shows additional output which is normally hidden.");
 	console.log("  -g, -global          Installs package globally as if --global was passed to npm.");
 	console.log("");
-	console.log("  Additionally, most npm 'dobule dash' (aka --) options will pass straight thru.");
-	console.log("");
 	process.exit(0);
 }
 
-var options = argv;
-options.verbose = argv.v || argv.verbose || false;
-options.silent = argv.s || argv.silent || false;
-options.global = argv.g || argv.global || false;
+var options = {
+	verbose: argv.v || argv.verbose || false,
+	silent: argv.s || argv.silent || false,
+	global: argv.g || argv.global || false
+};
 
 var sources = args;
 var errorCount = 0;

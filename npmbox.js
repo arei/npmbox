@@ -9,7 +9,7 @@ var box = require("./npmboxxer.js").box;
 var utils = require("./utils.js");
 
 var argv = require("optimist")
-	.boolean(["v","verbose"])
+	.boolean(["v","verbose","s","silent"])
 	.argv;
 
 var args = argv._;
@@ -32,7 +32,6 @@ if (args.length<1 || argv.help) {
 var options = {
 	verbose: argv.v || argv.verbose || false,
 	silent: argv.s || argv.silent || false,
-	global: argv.g || argv.global || false
 };
 
 var sources = args;
