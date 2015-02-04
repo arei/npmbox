@@ -97,7 +97,7 @@ or
 
 5). Install npmbox globally using the following command.
 
-	npm install --global --cache ./.npmbox.cache --optional --cache-min 99999 --fetch-retries 0 --fetch-retry-factor 0 --fetch-retry-mintimeout 1 --fetch-retry-maxtimeout 2 npmbox
+	npm install --global --cache ./.npmbox.cache --optional --cache-min 99999 npmbox
 
 Once npmbox is installed globally you can use it to install other .npmbox files:
 
