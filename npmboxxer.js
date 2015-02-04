@@ -95,7 +95,6 @@
 					var fullname = packageName.split(/@/g)[0] || packageName;
 					fullname += "@"+found;
 					results[fullname] = true;
-					console.log(1,packageName+" >>> "+fullname);
 
 					var children = [];
 					if (deps[found].dependencies) {
