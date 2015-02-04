@@ -2,6 +2,9 @@
 // https://github.com/arei/npmbox.git
 
 // Shared code for npmbox/npmunbox
+
+"use strict";
+
 (function(){
 	var npm = require("npm");
 	var fs = require("fs");
@@ -11,8 +14,8 @@
 	var is = require("is");
 
 	var cwd = process.cwd();
-	var cache = path.resolve(cwd,".npmbox-cache");
-	var work = path.resolve(cwd,".npmbox-work");
+	var work = path.resolve(cwd,".npmbox.work");
+	var cache = path.resolve(cwd,".npmbox.cache");
 
 	var cleanCache = function(callback) {
 		process.chdir(cwd);
@@ -29,13 +32,20 @@
 	};
 
 	var cleanAll = function(callback) {
-		console.log("\nCleaning Up...");
 		cleanCache(function(){
 			cleanWork(function(){
-				console.log("");
 				callback();
 			});
 		});
+	};
+
+	var tarCreate = function(source,target,callback) {
+		console.log("  Packing "+target+"...");
+		new targz(6,6,false).compress(source,target,callback);
+	};
+
+	var tarExtract = function(source,target,callback) {
+		new targz().extract(source,target,callback);
 	};
 
 	var npmInit = function(options,callback) {
@@ -44,109 +54,217 @@
 
 	var npmInstall = function(source,callback) {
 		if (!is.array(source)) source = [source];
-		npm.commands.install(source,callback);
+		npm.commands.install(".",source,callback);
 	};
 
-	var tarCreate = function(source,target,callback) {
-		new targz(6,6,false).compress(source,target,callback);
+	var npmDependencies = function(packageName,options,callback) {
+		if (!packageName) return callback(null);
+
+		var checked = {};
+		var results = {};
+		var pending = [];
+
+		var done = function(packageName) {
+			pending = pending.filter(function(p){
+				return p!==packageName;
+			});
+			if (pending.length>0) return;
+
+			callback(null,Object.keys(results));
+		};
+
+		var lookup = function(packageName) {
+			if (checked[packageName]) return;
+
+			pending.push(packageName);
+			checked[packageName] = true;
+
+			var args = [packageName];
+
+			if (!options.silent) console.log("  Querying "+packageName);
+
+			npm.commands.view(args,true,function(err,deps){
+				if (err) return callback(err);
+				if (!deps) return callback("Package '"+packageName+"' was not found in npm.");
+
+				var found = Object.keys(deps)[0];
+				if (!found) return callback("Erroc occured reading npm info for '"+packageName+"' packageName.");
+
+				var fullname = packageName.split(/@/g)[0] || packageName;
+				fullname += "@"+found;
+				results[fullname] = true;
+
+				var children = [];
+				if (deps[found].dependencies) {
+					Object.keys(deps[found].dependencies).forEach(function(key){
+						var value = deps[found].dependencies[key];
+						if (key && value) children.push(key+"@"+value);
+					});
+				}
+				if (deps[found].optionalDependencies) {
+					Object.keys(deps[found].optionalDependencies).forEach(function(key){
+						var value = deps[found].optionalDependencies[key];
+						if (key && value) children.push(key+"@"+value);
+					});
+				}
+
+				children.forEach(function(childPackageName){
+					lookup(childPackageName);
+				});
+
+				done(packageName);
+			});
+		};
+
+		lookup(packageName);
 	};
 
-	var tarExtract = function(source,target,callback) {
-		new targz().extract(source,target,callback);
+	var npmDownload = function(packageNames,options,callback) {
+		if (!packageNames) return callback(null);
+		if (!is.array(packageNames)) packageNames = [packageNames];
+
+		var pending = [].concat(packageNames);
+
+		var done = function(packageName) {
+			pending = pending.filter(function(p){
+				return p!==packageName;
+			});
+			if (pending.length>0) return;
+			callback(null,packageNames);
+		};
+
+		var populate = function(packageName) {
+			if (!options.silent) console.log("  Downloading "+packageName);
+
+			//npm.commands.cache.add(name,ver,where,scrub,cb)
+			npm.commands.cache.add(packageName,null,null,false,function(err){
+				if (err) return callback("Error occured downloading '"+packageName+"' to cache.");
+				done(packageName);
+			});
+
+		};
+
+		packageNames.forEach(function(packageName){
+			populate(packageName);
+		});
 	};
 
 	var box = function(source,options,callback) {
 		var target = path.resolve(cwd,source+".npmbox");
+		if (fs.existsSync(target)) {
+			callback("An .npmbox file already exist with this name.  Please remove it and try again.");
+			return;
+		}
 
-		if (!fs.existsSync(cache)) fs.mkdirSync(cache);
-		if (!fs.existsSync(work)) fs.mkdirSync(work);
+		if (fs.existsSync(cache)) {
+			callback("An .npmbox.cache folder already exist and might conflict.  Please remove it first or work from a different directory.");
+			return;
+		}
+		fs.mkdirSync(cache);
 
-		var npmoptions = {
-			cache: cache,
-			prefix: work,
-			global: true,
-			optional: true,
-			force: true,
-			loglevel: options && options.verbose ? "http" : "silent"
+		var done = function(err) {
+			var args = arguments;
+			cleanAll(function(){
+				if (!err) console.log("  Done.");
+				callback.apply(null,args);
+			});
 		};
 
-		npmInit(npmoptions,function(err){
-			if (err) {
-				cleanAll(callback.bind(this,"Unable to load npm"));
-				return;
-			}
-
-			console.log("Downloading package "+source+"...");
-			npmInstall(source,function(err){
-				if (err) {
-					cleanAll(callback.bind(this,"npm Error: "+err));
-					return
-				}
-
-				console.log("\nCreating archive "+target+"...");
-				tarCreate(cache,target,function(err){
-				    if(err) {
-						cleanAll(callback.bind(this,"Error writing "+target));
-				    	return;
-				    }
-
-					cleanAll(callback.bind(this,null,target));
-				});
+		var pack = function() {
+			tarCreate(cache,target,function(err){
+				if (err) return done(err);
+				done();
 			});
-		});
+		};
+
+		var stack = function(deps) {
+			npmDownload(deps,options,function(err){
+				if (err) return done(err);
+				pack(deps);
+			});
+		};
+
+		var rack = function() {
+			npmDependencies(source,options,function(err,deps){
+				if (err) return done(err);
+				stack(deps);
+			});
+		};
+
+		var init = function() {
+			var npmoptions = {
+				cache: cache,
+				prefix: work,
+				global: true,
+				optional: true,
+				force: true,
+				loglevel: options && options.verbose ? "http" : "silent"
+			};
+
+			npmInit(npmoptions,function(err){
+				if (err) return done(err);
+				rack();
+			});
+		};
+
+		init();
 	};
 
 	var unbox = function(source,options,callback) {
 		var target = source.replace(/\.npmbox$/,"");
 
-		var npmoptions = {
-			cache: cache,
-			'cache-min': 999999,
-			global: options.global ? true : false,
-			optional: true,
-			force: false,
-			'fetch-retries': 0,
-			'fetch-retry-factor': 0,
-			'fetch-retry-mintimeout': 1,
-			'fetch-retry-maxtimeout': 2,
-			loglevel: options.verbose ? "http" : "silent"
-		};
-
 		if (!fs.existsSync(source)) {
 			source = path.resolve(cwd,source+".npmbox");
 			if (!fs.existsSync(source)) {
-				callback("Source not found: "+source);
+				callback("No .npmbox file found: "+source);
 				return;
 			}
 		}
 
 		if (!fs.existsSync(cache)) fs.mkdirSync(cache);
 
-		console.log("Extracting archive "+target+"...");
-		tarExtract(source,".",function(err){
-			if (err) {
-				cleanAll(callback.bind(this,"Error reading "+source));
-				return;
-			}
-
-			npmInit(npmoptions,function(err){
-				if (err) {
-					cleanAll(callback.bind(this,"Unable to load npm"));
-					return;
-				}
-
-				console.log("Installing "+target+"...");
-				npmInstall([target],function(err){
-					if (err) {
-						cleanAll(callback.bind(this,"Unable to install "+source+" from "+target));
-						return;
-					}
-
-					cleanAll(callback.bind(this,null,target));
-				});
+		var done = function(err) {
+			cleanAll(function(){
+				callback(err);
 			});
-		});
-	}
+		};
+
+		var install = function() {
+			if (!options.silent) console.log("Installing "+target+"...");
+
+			npmInstall([target],function(err){
+				if (err) return done(err);
+				done();
+			});
+
+		};
+
+		var unpack = function() {
+			if (!options.silent) console.log("Unpacking "+target+"...");
+
+			tarExtract(source,".",function(err){
+				if (err) return done(err);
+				install();
+			});
+		};
+
+		var init = function () {
+			options.cache = cache;
+			options.loglevel = options.verbose ? "verbose" : "silent";
+			options["cache-min"] = 99999;
+			options["fetch-retries"] = 0;
+			options["fetch-retry-factor"] = 0;
+			options["fetch-retry-mintimeout"] = 1;
+			options["fetch-retry-maxtimeout"] = 2;
+
+			npmInit(options,function(err){
+				if (err) return done(err);
+				unpack();
+			});
+		};
+
+		init();
+	};
 
 	module.exports = {
 		box: box,

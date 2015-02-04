@@ -1,12 +1,7 @@
 npmbox
 -------
 
-UPDATE September 19,2014: Just two quick notes... 1). Got a awesome patch today from @jamiemcconnell that fixes
-the --no-registry error. Everyone should update to v1.0.0 as soon as possible. He also updated the docs section about
-running npmbox without npmbox installed below. A massive fix from an awesome dude.  Jamie, the beer is on me should
-either of us transcend the pond at some point. 2). npm 2.0.0 shipped
-today and I look forward to taking a look at integrating npmbox over to using npm 2.0.0.  That said, npmbox will only
-work using npm 1.x.x for the time being.
+UPDATE February 3, 2015: v2.0.0 of npmbox is now available! This upgrades the npm dependency to v2.4.1 (which is the latest as of this writing) and cleaned up a how the .npmbox file was getting written.  npmbox used to install a temporary copy of whatever you were boxing, but that is no longer necessary. A bunch of very small other changes happened as well.
 
 [![Build Status](https://travis-ci.org/arei/npmbox.svg)](https://travis-ci.org/arei/npmbox)
 
@@ -28,6 +23,7 @@ Given some package, like `express` this command will create a archive file of th
 	Options:
 
   		-v, -verbose         Shows npm output which is normally hidden.
+  		-s, -silent          Shows no output whatsoever.
 
 You must specify at least one package.
 
@@ -49,7 +45,11 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
 	Options:
 
 		-v, -verbose         Shows npm output which is normally hidden.
+		-s, -silent          Shows no output whatsoever.
 		-g, -global          Installs package globally as if --global was passed to npm.
+
+		Additionally, most npm double dash (aka --) arguments
+		should pass through.
 
 You must specify at least one file.
 
@@ -60,8 +60,6 @@ You may specify more than one file, and each will be installed.
 A particular use case with npmunbox comes up fairly often: **how do I use npmbox without first installing npmbox**.  Specifically, many people have asked for a way to run npmunbox as a means to installing npmbox.  You can see that this is a bit of a chicken and egg problem.  How do we install npmbox from an npmbox file?
 
 ### Installing npmbox from an .npmbox file
-
-These instructions assume that you have already created a .npmbox file on npmbox using `npmbox npmbbox`
 
 **On a system that does have access to the Internet, you need to do the following:**
 
@@ -95,11 +93,11 @@ or
 
 4). Untar the .npmbox file.  This will create the .npmbox-cache folder.
 
-	tar -xvfo npmbox.npmbox
+	tar -xvf npmbox.npmbox
 
 5). Install npmbox globally using the following command.  **Notes: You must be using npm 1.4.28 or later! Also, this command may require root access/sudo in order to correctly install.**
 
-	npm install --global --cache ./.npmbox-cache --optional --cache-min 999999 --fetch-retries 0 --fetch-retry-factor 0 --fetch-retry-mintimeout 1 --fetch-retry-maxtimeout 2 npmbox
+	npm install --global --cache ./.npmbox.cache --optional --cache-min 99999 --fetch-retries 0 --fetch-retry-factor 0 --fetch-retry-mintimeout 1 --fetch-retry-maxtimeout 2 npmbox
 
 Once npmbox is installed globally you can use it to install other .npmbox files:
 
