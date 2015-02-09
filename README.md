@@ -1,11 +1,15 @@
 npmbox
 -------
 
-UPDATE February 4, 2015: v2.1.0 of npmbox is now available! This upgrades the npm dependency to v2.4.1 (which is the latest as of this writing) and cleaned up a how the .npmbox file was getting written.  npmbox used to install a temporary copy of whatever you were boxing, but that is no longer necessary. A bunch of very small other changes happened as well.
+UPDATE February 9, 2015: v2.1.2 of npmbox is now available! This upgrades the npm dependency to v2.4.1 (which is the latest as of this writing) and cleaned up a how the .npmbox file was getting written.  npmbox used to install a temporary copy of whatever you were boxing, but that is no longer necessary. A bunch of very small other changes happened as well.
+
+-------
 
 [![Build Status](https://travis-ci.org/arei/npmbox.svg)](https://travis-ci.org/arei/npmbox)
 
 [![NPM](https://nodei.co/npm/npmbox.png)](https://nodei.co/npm/npmbox/)
+
+-------
 
 npm addon utility for creating and installing from an archive file of an npm install, including dependencies.  This lets you create a "box" of an installable package and move it to an offline system that will only install from that box.
 

@@ -29,7 +29,7 @@
     "unbox"
   ],
   "description": "npm addon utility for creating and installing from an archive file of an npm install, including dependencies.",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "homepage": "http://github.com/arei/npmbox",
   "bugs": {
     "url": "http://github.com/arei/npmbox/issues"
@@ -57,7 +57,7 @@
     "tar.gz": "~0.1.1",
     "rimraf": "~2.2.8",
     "optimist": "~0.6.1",
-    "is": "~2.2.0"
+    "is": "~2.2.1"
   },
   "devDependencies": {},
   "optionalDependencies": {}
