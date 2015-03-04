@@ -1,7 +1,7 @@
 npmbox
 -------
 
-UPDATE February 9, 2015: v2.1.2 of npmbox is now available! This upgrades the npm dependency to v2.4.1 (which is the latest as of this writing) and cleaned up a how the .npmbox file was getting written.  npmbox used to install a temporary copy of whatever you were boxing, but that is no longer necessary. A bunch of very small other changes happened as well.
+UPDATE March 4, 2015: v2.2.0 of npmbox is now available and adds support for the --save, --save-* and --prefix switches in npmunbox.
 
 -------
 
@@ -28,8 +28,8 @@ Given some package, like `express` this command will create a archive file of th
 
 	Options:
 
-  		-v, -verbose         Shows npm output which is normally hidden.
-  		-s, -silent          Shows no output whatsoever.
+		-v, -verbose         Shows npm output which is normally hidden.
+		-s, -silent          Shows no output whatsoever.
 
 You must specify at least one package.
 
@@ -51,8 +51,14 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
 	Options:
 
 		-v, -verbose         Shows npm output which is normally hidden.
-		-s, -silent          Shows no output whatsoever.
+		-s, -silent          Shows additional output which is normally hidden.
 		-g, -global          Installs package globally as if --global was passed to npm.
+		-C, -prefix          npm --prefix switch.
+		-S, -save            npm --save switch.
+		-D, -save-dev        npm --save-dev swtich.
+		-O, -save-optional   npm --save-optional swtich.
+		-B, -save-bundle     npm --save-bundle swtich.
+		-E, -save-exact      npm --save-exact swtich.
 
 
 You must specify at least one file.
