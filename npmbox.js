@@ -60,7 +60,7 @@ var boxNext = function() {
 };
 
 var boxExecute = function(source) {
-	if (!options.silent) console.log("\nBoxing "+source);
+	if (!options.silent) console.log("\nBoxing "+source+"...");
 	box(source,options,boxDone);
 };
 

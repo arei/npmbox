@@ -85,7 +85,7 @@ var unboxNext = function() {
 };
 
 var unboxExecute = function(source) {
-	if (!options.silent) console.log("\nUnboxing "+source);
+	if (!options.silent) console.log("\nUnboxing "+source+"...");
 	unbox(source,options,unboxDone);
 };
 

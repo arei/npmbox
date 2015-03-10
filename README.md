@@ -1,7 +1,7 @@
 npmbox
 -------
 
-UPDATE March 4, 2015: v2.2.0 of npmbox is now available and adds support for the --save, --save-* and --prefix switches in npmunbox.
+UPDATE March 10, 2015: v2.3.0 of npmbox is now available with a bug fix for permission problems across multiple operating systems.
 
 -------
 
@@ -103,7 +103,9 @@ or
 
 4). Untar the .npmbox file.  This will create the .npmbox-cache folder.
 
-	tar -xvf npmbox.npmbox
+	tar -xvfz --no-same-owner --no-same-permissions -- npmbox.npmbox
+
+If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
 
 5). Install npmbox globally using the following command.
 

@@ -1,106 +1,30 @@
 0 info it worked if it ends with ok
 1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
 1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
-1 verbose cli   'publish' ]
+1 verbose cli   'shrinkwrap' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.36
 4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
-5 verbose publish [ '.' ]
-6 verbose cache add [ '.', null ]
-7 verbose cache add name=undefined spec="." args=[".",null]
-8 verbose parsed url { protocol: null,
-8 verbose parsed url   slashes: null,
-8 verbose parsed url   auth: null,
-8 verbose parsed url   host: null,
-8 verbose parsed url   port: null,
-8 verbose parsed url   hostname: null,
-8 verbose parsed url   hash: null,
-8 verbose parsed url   search: null,
-8 verbose parsed url   query: null,
-8 verbose parsed url   pathname: '.',
-8 verbose parsed url   path: '.',
-8 verbose parsed url   href: '.' }
-9 silly lockFile 3a52ce78- .
-10 verbose lock . C:\Users\ggoodw\AppData\Roaming\npm-cache\3a52ce78-.lock
-11 verbose tar pack [ 'C:\\Users\\ggoodw\\AppData\\Roaming\\npm-cache\\npmbox\\2.1.2\\package.tgz',
-11 verbose tar pack   '.' ]
-12 verbose tarball C:\Users\ggoodw\AppData\Roaming\npm-cache\npmbox\2.1.2\package.tgz
-13 verbose folder .
-14 info prepublish npmbox@2.1.2
-15 silly lockFile 1f1177db-tar tar://.
-16 verbose lock tar://. C:\Users\ggoodw\AppData\Roaming\npm-cache\1f1177db-tar.lock
-17 silly lockFile ad2ff231-m-cache-npmbox-2-1-2-package-tgz tar://C:\Users\ggoodw\AppData\Roaming\npm-cache\npmbox\2.1.2\package.tgz
-18 verbose lock tar://C:\Users\ggoodw\AppData\Roaming\npm-cache\npmbox\2.1.2\package.tgz C:\Users\ggoodw\AppData\Roaming\npm-cache\ad2ff231-m-cache-npmbox-2-1-2-package-tgz.lock
-19 silly lockFile 1f1177db-tar tar://.
-20 silly lockFile 1f1177db-tar tar://.
-21 silly lockFile ad2ff231-m-cache-npmbox-2-1-2-package-tgz tar://C:\Users\ggoodw\AppData\Roaming\npm-cache\npmbox\2.1.2\package.tgz
-22 silly lockFile ad2ff231-m-cache-npmbox-2-1-2-package-tgz tar://C:\Users\ggoodw\AppData\Roaming\npm-cache\npmbox\2.1.2\package.tgz
-23 silly lockFile 6cf7fc50-g-npm-cache-npmbox-2-1-2-package C:\Users\ggoodw\AppData\Roaming\npm-cache\npmbox\2.1.2\package
-24 verbose lock C:\Users\ggoodw\AppData\Roaming\npm-cache\npmbox\2.1.2\package C:\Users\ggoodw\AppData\Roaming\npm-cache\6cf7fc50-g-npm-cache-npmbox-2-1-2-package.lock
-25 silly lockFile 6cf7fc50-g-npm-cache-npmbox-2-1-2-package C:\Users\ggoodw\AppData\Roaming\npm-cache\npmbox\2.1.2\package
-26 silly lockFile 6cf7fc50-g-npm-cache-npmbox-2-1-2-package C:\Users\ggoodw\AppData\Roaming\npm-cache\npmbox\2.1.2\package
-27 silly lockFile 3a52ce78- .
-28 silly lockFile 3a52ce78- .
-29 silly publish { author: { name: 'Glen R. Goodwin', url: 'http://www.arei.net' },
-29 silly publish   name: 'npmbox',
-29 silly publish   keywords:
-29 silly publish    [ 'npm',
-29 silly publish      'npm utility',
-29 silly publish      'npm pack',
-29 silly publish      'npm package',
-29 silly publish      'npm utilities',
-29 silly publish      'npm archive',
-29 silly publish      'npm unpack',
-29 silly publish      'npm zip',
-29 silly publish      'npm unzip',
-29 silly publish      'unpack',
-29 silly publish      'pack',
-29 silly publish      'npmbox',
-29 silly publish      'npmunbox',
-29 silly publish      'zip',
-29 silly publish      'unzip',
-29 silly publish      'offline',
-29 silly publish      'npm offline',
-29 silly publish      'offline install',
-29 silly publish      'install',
-29 silly publish      'install offline',
-29 silly publish      'npm install',
-29 silly publish      'npm install offline',
-29 silly publish      'npm offline install',
-29 silly publish      'box',
-29 silly publish      'unbox' ],
-29 silly publish   description: 'npm addon utility for creating and installing from an archive file of an npm install, including dependencies.',
-29 silly publish   version: '2.1.2',
-29 silly publish   homepage: 'http://github.com/arei/npmbox',
-29 silly publish   bugs: { url: 'http://github.com/arei/npmbox/issues' },
-29 silly publish   licenses:
-29 silly publish    [ { type: 'MIT',
-29 silly publish        url: 'http://github.com/arei/npmbox/blob/master/LICENSE.txt' } ],
-29 silly publish   repository: { type: 'git', url: 'git://github.com/arei/npmbox.git' },
-29 silly publish   main: 'npmboxxer.js',
-29 silly publish   bin: { npmbox: './bin/npmbox', npmunbox: './bin/npmunbox' },
-29 silly publish   engines: { node: '>=0.10' },
-29 silly publish   dependencies:
-29 silly publish    { npm: '~2.4.1',
-29 silly publish      'tar.gz': '~0.1.1',
-29 silly publish      rimraf: '~2.2.8',
-29 silly publish      optimist: '~0.6.1',
-29 silly publish      is: '~2.2.1' },
-29 silly publish   devDependencies: {},
-29 silly publish   optionalDependencies: {},
-29 silly publish   readme: 'npmbox\n-------\n\nUPDATE February 9, 2015: v2.1.2 of npmbox is now available! This upgrades the npm dependency to v2.4.1 (which is the latest as of this writing) and cleaned up a how the .npmbox file was getting written.  npmbox used to install a temporary copy of whatever you were boxing, but that is no longer necessary. A bunch of very small other changes happened as well.\n\n-------\n\n[![Build Status](https://travis-ci.org/arei/npmbox.svg)](https://travis-ci.org/arei/npmbox)\n\n[![NPM](https://nodei.co/npm/npmbox.png)](https://nodei.co/npm/npmbox/)\n\n-------\n\nnpm addon utility for creating and installing from an archive file of an npm install, including dependencies.  This lets you create a "box" of an installable package and move it to an offline system that will only install from that box.\n\nnpmbox is intended to be a proof of concept with regards to this issue filled against this npm feature request: [[Feature] Bundle/Include Dependencies](https://github.com/isaacs/npm/issues/4210).  Ideally, we would like to see the npmbox functionality built into npm so a third party tool like npmbox is not required or necessary. Please go add your support over at that ticket to help get us some visibility... or, even better, go write the code!\n\n## Usage of `npmbox`\n\nGiven some package, like `express` this command will create a archive file of that package and all of its dependencies, such that a npmunbox of that archive file will install express and all of its dependencies.\n\n\tnpmbox - Create an archive for offline installation of the given package.\n\n\tUsage:\n\n  \t\tnpmbox --help\n  \t\tnpmbox [options] <package> <package>...\n\n\tOptions:\n\n  \t\t-v, -verbose         Shows npm output which is normally hidden.\n  \t\t-s, -silent          Shows no output whatsoever.\n\nYou must specify at least one package.\n\nYou can specify more than one package and a separate archive will be created for each specified.\n\nnpmbox files end with the .npmbox extension.\n\n## Usage of `npmunbox`\n\nGiven some .npmbox file (must end with the .npmbox extension), installs the contents and all of it dependencies.\n\n\tnpmunbox - Extracts a .npmbox file and installs the contained package.\n\n\tUsage:\n\n\t\tnpmunbox --help\n\t\tnpmunbox [options] <nmpbox-file> <npmbox-file>...\n\n\tOptions:\n\n\t\t-v, -verbose         Shows npm output which is normally hidden.\n\t\t-s, -silent          Shows no output whatsoever.\n\t\t-g, -global          Installs package globally as if --global was passed to npm.\n\n\nYou must specify at least one file.\n\nYou may specify more than one file, and each will be installed.\n\n## Using `npmunbox` without npmbox being installed\n\nA particular use case with npmunbox comes up fairly often: **how do I use npmbox without first installing npmbox**.  Specifically, many people have asked for a way to run npmunbox as a means to installing npmbox.  You can see that this is a bit of a chicken and egg problem.  How do we install npmbox from an npmbox file?\n\n### Installing npmbox from an .npmbox file\n\n**On a system that does have access to the Internet, you need to do the following:**\n\n1). If npmbox is not globally installed on your online system, do so now:\n\n\tnpm install -g npmbox\n\n2). In a folder in which you can read/write:\n\n\tnpmbox npmbox\n\n3). Copy the resulting `npmbox.npmbox` file to you offline system in whatever manner allowed to you,  This could involve coping to movable media and transfering that way, however you would do it.\n\n**On the system you want to install npmbox to, do the following:**\n\n1). Create a new directory\n\n\tmkdir somedir\n\n2). Change to it:\n\n\tcd somedir\n\n3). Copy the npmbox.npmbox folder into this directory.\n\n\tcp /media/usb/npmbox.npmbox .\n\nor\n\n\tcopy E:\\npmbox.npmbox .\n\n4). Untar the .npmbox file.  This will create the .npmbox-cache folder.\n\n\ttar -xvf npmbox.npmbox\n\n5). Install npmbox globally using the following command.\n\n\tnpm install --global --cache ./.npmbox.cache --optional --cache-min 99999 npmbox\n\nOnce npmbox is installed globally you can use it to install other .npmbox files:\n\n\tnpmunbox blah\n\n## TO DO\n\n- Right now specifying multiple packages creates multiple .npmbox files.  Make it create just one .npmbox file by default.  Maybe allow a switch (-multi) to make it generate multiple.\n',
-29 silly publish   readmeFilename: 'README.md',
-29 silly publish   gitHead: '30db061ef590dee53bea9e28b57fa9ef04eaa7ba',
-29 silly publish   _id: 'npmbox@2.1.2',
-29 silly publish   scripts: {},
-29 silly publish   _shasum: '648dd01018e1d7d87364a5ecbdbd83be3ef4ad04',
-29 silly publish   _from: '.' }
-30 error need auth auth and email required for publishing
-30 error need auth You need to authorize this machine using `npm adduser`
-31 error System Windows_NT 6.1.7601
-32 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "publish"
-33 error cwd C:\DEV\GRGOODW\CODE\npmbox
-34 error node -v v0.10.36
-35 error npm -v 1.4.28
-36 error code ENEEDAUTH
-37 verbose exit [ 1, true ]
+5 error Error: Problems were encountered
+5 error Please correct and try again.
+5 error extraneous: colors@1.0.3 C:\DEV\GRGOODW\CODE\npmbox\node_modules\colors
+5 error extraneous: license-extractor@1.0.4 C:\DEV\GRGOODW\CODE\npmbox\node_modules\license-extractor
+5 error     at shrinkwrap_ (C:\Program Files (x86)\nodejs\node_modules\npm\lib\shrinkwrap.js:30:15)
+5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\lib\shrinkwrap.js:24:5
+5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\lib\ls.js:45:30
+5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-installed\read-installed.js:130:5
+5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-installed\read-installed.js:244:14
+5 error     at cb (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\slide\lib\async-map.js:47:24)
+5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-installed\read-installed.js:244:14
+5 error     at cb (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\slide\lib\async-map.js:47:24)
+5 error     at C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\read-installed\read-installed.js:244:14
+5 error     at cb (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\slide\lib\async-map.js:47:24)
+6 error If you need help, you may report this *entire* log,
+6 error including the npm and node versions, at:
+6 error     <http://github.com/npm/npm/issues>
+7 error System Windows_NT 6.1.7601
+8 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "shrinkwrap"
+9 error cwd C:\DEV\GRGOODW\CODE\npmbox
+10 error node -v v0.10.36
+11 error npm -v 1.4.28
+12 verbose exit [ 1, true ]

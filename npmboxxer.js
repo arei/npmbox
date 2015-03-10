@@ -12,6 +12,7 @@
 	var targz = require("tar.gz");
 	var rimraf = require("rimraf");
 	var is = require("is");
+	var Decompress = require("decompress");
 
 	var cwd = process.cwd();
 	var work = path.resolve(cwd,".npmbox.work");
@@ -44,7 +45,15 @@
 	};
 
 	var tarExtract = function(source,target,callback) {
-		new targz().extract(source,target,callback);
+		// new targz().extract(source,target,callback);
+
+		var decompress = new Decompress({
+			mode:755
+		});
+		decompress.src(source);
+		decompress.dest(target);
+		decompress.use(Decompress.targz({}));
+		decompress.run(callback);
 	};
 
 	var npmInit = function(options,callback) {
