@@ -103,7 +103,7 @@ or
 
 4). Untar the .npmbox file.  This will create the .npmbox-cache folder.
 
-	tar -xvfz --no-same-owner --no-same-permissions -- npmbox.npmbox
+	tar -xvfz --no-same-owner --no-same-permissions npmbox.npmbox
 
 If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
 
