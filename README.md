@@ -105,9 +105,9 @@ or
 
 	tar -xvfz --no-same-owner --no-same-permissions npmbox.npmbox
 
-If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
+NOTE: If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
 
-On some OSes it may also be necessary to drop the ```-z``` switch fromt he tar command as well.
+NOTE: On some OSes it may also be necessary to drop the ```-z``` switch fromt he tar command as well.
 
 5). Install npmbox globally using the following command.
 
@@ -119,6 +119,7 @@ For windows...
 
 	npm install --global --cache .\.npmbox.cache --optional --cache-min 99999 --shrinkwrap false npmbox
 
+NOTE: You may need to rename or move the ```npmbox.npmbox``` file if it is in the same directory you are running the above ```npm install``` command. The ```npm install``` command may see the ```npmbox.npmbox``` as the source instead of looking in the cache in this scenario.  A simple rename or move to something with a different name (like ```mynpmbox.npmbox```) will do the trick.
 
 6). Once npmbox is installed globally you can use it to install other .npmbox files:
 
