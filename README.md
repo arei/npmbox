@@ -107,6 +107,8 @@ or
 
 If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
 
+On some OSes it may also be necessary to drop the ```-z``` switch fromt he tar command as well.
+
 5). Install npmbox globally using the following command.
 
 For unix or max...
