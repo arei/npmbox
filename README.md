@@ -101,7 +101,7 @@ or
 
 	copy E:\npmbox.npmbox .
 
-4). Untar the .npmbox file.  This will create the .npmbox-cache folder.
+4). Untar the .npmbox file.  This will create the .npmbox.cache folder.
 
 	tar -xvfz --no-same-owner --no-same-permissions npmbox.npmbox
 
@@ -109,9 +109,16 @@ If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not w
 
 5). Install npmbox globally using the following command.
 
-	npm install --global --cache ./.npmbox.cache --optional --cache-min 99999 npmbox
+For unix or max...
 
-Once npmbox is installed globally you can use it to install other .npmbox files:
+	npm install --global --cache ./.npmbox.cache --optional --cache-min 99999 --shrinkwrap false npmbox
+
+For windows...
+
+	npm install --global --cache .\.npmbox.cache --optional --cache-min 99999 --shrinkwrap false npmbox
+
+
+6). Once npmbox is installed globally you can use it to install other .npmbox files:
 
 	npmunbox blah
 
