@@ -109,6 +109,8 @@ NOTE: If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do
 
 NOTE: On some OSes it may also be necessary to drop the ```-z``` switch fromt he tar command as well.
 
+NOTE: On windows you might not have the tar command.  You can use another zip utility (like 7-zip or winzip) to extract the file if you like.  Just please note that the file is a .tar.gz file and thus you may need to extract it twice, once for the zip, the second for the tar.  **If you do this, please make sure to remove the tar file from your local directory before running the npm command below.**
+
 5). Install npmbox globally using the following command.
 
 For unix or max...
@@ -119,7 +121,7 @@ For windows...
 
 	npm install --global --cache .\.npmbox.cache --optional --cache-min 99999 --shrinkwrap false npmbox
 
-NOTE: You may need to rename or move the ```npmbox.npmbox``` file if it is in the same directory you are running the above ```npm install``` command. The ```npm install``` command may see the ```npmbox.npmbox``` as the source instead of looking in the cache in this scenario.  A simple rename or move to something with a different name (like ```mynpmbox.npmbox```) will do the trick.
+NOTE: If you have a file called ```npmbox``` (no extension) in the local directory, this will not work correctly.  Please remove said ```npmbox``` file.
 
 6). Once npmbox is installed globally you can use it to install other .npmbox files:
 
