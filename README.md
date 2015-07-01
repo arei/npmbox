@@ -103,11 +103,11 @@ or
 
 4). Untar the .npmbox file.  This will create the .npmbox.cache folder.
 
-	tar -xvfz --no-same-owner --no-same-permissions npmbox.npmbox
+	tar --no-same-owner --no-same-permissions -xvzf npmbox.npmbox
 
 NOTE: If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
 
-NOTE: On some OSes it may also be necessary to drop the ```-z``` switch fromt he tar command as well.
+NOTE: On some OSes it may also be necessary to drop the ```-z``` switch from the tar command as well.
 
 NOTE: On windows you might not have the tar command.  You can use another zip utility (like 7-zip or winzip) to extract the file if you like.  Just please note that the file is a .tar.gz file and thus you may need to extract it twice, once for the zip, the second for the tar.  **If you do this, please make sure to remove the tar file from your local directory before running the npm command below.**
 
