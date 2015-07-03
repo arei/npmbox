@@ -55,10 +55,10 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
 		-g, -global          Installs package globally as if --global was passed to npm.
 		-C, -prefix          npm --prefix switch.
 		-S, -save            npm --save switch.
-		-D, -save-dev        npm --save-dev swtich.
-		-O, -save-optional   npm --save-optional swtich.
-		-B, -save-bundle     npm --save-bundle swtich.
-		-E, -save-exact      npm --save-exact swtich.
+		-D, -save-dev        npm --save-dev switch.
+		-O, -save-optional   npm --save-optional switch.
+		-B, -save-bundle     npm --save-bundle switch.
+		-E, -save-exact      npm --save-exact switch.
 
 
 You must specify at least one file.
