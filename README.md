@@ -79,23 +79,23 @@ To solve this problem, you may pre-pack npmbox as an offline tarball and utilize
 
 If everything goes well, you should end up with build output such as the following. Look specifically for the [SUCCESS] build test result.
 
-./build-offline-tarball.sh 
-npm http GET https://registry.npmjs.org/npmbox
-npm http 304 https://registry.npmjs.org/npmbox
-npmbox@2.7.0 node_modules/npmbox
-npmbox-2.7.0.tgz
-Description:	Ubuntu 14.04.3 LTS
-Rules updated
-Rules updated (v6)
-Rules updated
-Rules updated (v6)
-Command may disrupt existing ssh connections. Proceed with operation (y|n)? Firewall is active and enabled on system startup
-/usr/local/bin/npmbox -> /usr/local/lib/node_modules/npmbox/bin/npmbox
-/usr/local/bin/npmunbox -> /usr/local/lib/node_modules/npmbox/bin/npmunbox
-npmbox@2.7.0 /usr/local/lib/node_modules/npmbox
-/usr/local/bin/npmbox
-[SUCCESS] Npmbox established without internet access.
-Firewall stopped and disabled on system startup
+    ./build-offline-tarball.sh 
+    npm http GET https://registry.npmjs.org/npmbox
+    npm http 304 https://registry.npmjs.org/npmbox
+    npmbox@2.7.0 node_modules/npmbox
+    npmbox-2.7.0.tgz
+    Description:	Ubuntu 14.04.3 LTS
+    Rules updated
+    Rules updated (v6)
+    Rules updated
+    Rules updated (v6)
+    Command may disrupt existing ssh connections. Proceed with operation (y|n)? Firewall is active and enabled on system startup
+    /usr/local/bin/npmbox -> /usr/local/lib/node_modules/npmbox/bin/npmbox
+    /usr/local/bin/npmunbox -> /usr/local/lib/node_modules/npmbox/bin/npmunbox
+    npmbox@2.7.0 /usr/local/lib/node_modules/npmbox
+    /usr/local/bin/npmbox
+    [SUCCESS] Npmbox established without internet access.
+    Firewall stopped and disabled on system startup
 
 2). From within the box without internet access, copy the resulting npmbox*.tgz file somewhere from the build box and execute the following command against it:
 
