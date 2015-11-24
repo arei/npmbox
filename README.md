@@ -37,7 +37,7 @@ You can specify more than one package and a separate archive will be created for
 
 npmbox files end with the .npmbox extension.
 
-Note: When creating an archive file for a package destined to be installed on an offline machine clear your npm cache before using npmbox
+NOTE: When creating an archive file for a package destined to be installed on an offline machine clear your npm cache before using npmbox
 
     npm cache clean
 
@@ -131,7 +131,7 @@ NOTE: If you have a file called ```npmbox``` (no extension) in the local directo
 
 	npmunbox blah
 
-NOTE: If you are running into issues where npmunbox is still trying to reach out to the internet it may help to try clearing your npm caceh on the machine
+NOTE: If you are running into issues where npmunbox is still trying to reach out to the internet it may help to try clearing your npm cache on the machine
 
     npm cache clean
 
