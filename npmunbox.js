@@ -41,7 +41,7 @@ if (args.length<1 || argv.help) {
 	console.log("");
 	console.log("  -v, -verbose         Shows npm output which is normally hidden.");
 	console.log("  -s, -silent          Shows additional output which is normally hidden.");
-	console.log("  -p, -path            Specify a path from which to read the .npmbox file(s).");
+	console.log("  -p, -path            Specify the path to a folder from which the .npmbox file(s) will be read.");
 	console.log("  -g, -global          Installs package globally as if --global was passed to npm.");
 	console.log("  -C, -prefix          npm --prefix switch.");
 	console.log("  -S, -save            npm --save switch.");
