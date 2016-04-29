@@ -10,6 +10,10 @@ var utils = require("./utils.js");
 
 var argv = require("optimist")
 	.boolean(["v","verbose","s","silent"])
+	.options("p", {
+		alias: "path",
+		default: process.cwd()
+	})
 	.argv;
 
 var args = argv._;
@@ -25,6 +29,7 @@ if (args.length<1 || argv.help) {
 	console.log("");
 	console.log("  -v, -verbose         Shows additional output which is normally hidden.");
 	console.log("  -s, -silent          Shows additional output which is normally hidden.");
+	console.log("  -p, -path            Specify a path to write the .npmbox file(s).");
 	console.log("");
 	process.exit(0);
 }
@@ -32,6 +37,7 @@ if (args.length<1 || argv.help) {
 var options = {
 	verbose: argv.v || argv.verbose || false,
 	silent: argv.s || argv.silent || false,
+	path: argv.p || argv.path || false
 };
 
 var sources = args;

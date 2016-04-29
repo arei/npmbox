@@ -30,6 +30,7 @@ Given some package, like `express` this command will create a archive file of th
 
 		-v, -verbose         Shows npm output which is normally hidden.
 		-s, -silent          Shows no output whatsoever.
+		-v, -path			 Specify a path to write the .npmbox file(s).
 
 You must specify at least one package.
 
@@ -56,6 +57,7 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
 
 		-v, -verbose         Shows npm output which is normally hidden.
 		-s, -silent          Shows additional output which is normally hidden.
+		-p, path			 Specify a path from which to read the .npmbox file(s).
 		-g, -global          Installs package globally as if --global was passed to npm.
 		-C, -prefix          npm --prefix switch.
 		-S, -save            npm --save switch.

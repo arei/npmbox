@@ -13,7 +13,6 @@
 	var rimraf = require("rimraf");
 	var is = require("is");
 	var Decompress = require("decompress");
-
 	var cwd = process.cwd();
 	var work = path.resolve(cwd,".npmbox.work");
 	var cache = path.resolve(cwd,".npmbox.cache");
@@ -156,7 +155,7 @@
 
 			//npm.commands.cache.add(name,ver,where,scrub,cb)
 			npm.commands.cache.add(packageName,null,null,false,function(err){
-				if (err) return callback("Error occurred downloading '"+packageName+"' to cache.");
+				if (err) return callback("Error occured downloading '"+packageName+"' to cache.");
 				done(packageName);
 			});
 
@@ -168,7 +167,7 @@
 	};
 
 	var box = function(source,options,callback) {
-		var target = path.resolve(cwd,source+".npmbox");
+		var target = path.resolve(options.path,source+".npmbox");
 		if (fs.existsSync(target)) {
 			callback("An .npmbox file already exist with this name.  Please remove it and try again.");
 			return;
@@ -232,9 +231,8 @@
 
 	var unbox = function(source,options,callback) {
 		var target = source.replace(/\.npmbox$/,"");
-
 		if (!fs.existsSync(source)) {
-			source = path.resolve(cwd,source+".npmbox");
+			source = path.resolve(options.path,source+".npmbox");
 			if (!fs.existsSync(source)) {
 				callback("No .npmbox file found: "+source);
 				return;
