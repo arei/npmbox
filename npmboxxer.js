@@ -13,6 +13,7 @@
 	var rimraf = require("rimraf");
 	var is = require("is");
 	var Decompress = require("decompress");
+	
 	var cwd = process.cwd();
 	var work = path.resolve(cwd,".npmbox.work");
 	var cache = path.resolve(cwd,".npmbox.cache");
@@ -155,7 +156,7 @@
 
 			//npm.commands.cache.add(name,ver,where,scrub,cb)
 			npm.commands.cache.add(packageName,null,null,false,function(err){
-				if (err) return callback("Error occured downloading '"+packageName+"' to cache.");
+				if (err) return callback("Error occurred downloading '"+packageName+"' to cache.");
 				done(packageName);
 			});
 

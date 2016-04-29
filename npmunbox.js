@@ -45,10 +45,10 @@ if (args.length<1 || argv.help) {
 	console.log("  -g, -global          Installs package globally as if --global was passed to npm.");
 	console.log("  -C, -prefix          npm --prefix switch.");
 	console.log("  -S, -save            npm --save switch.");
-	console.log("  -D, -save-dev        npm --save-dev swtich.");
-	console.log("  -O, -save-optional   npm --save-optional swtich.");
-	console.log("  -B, -save-bundle     npm --save-bundle swtich.");
-	console.log("  -E, -save-exact      npm --save-exact swtich.");
+	console.log("  -D, -save-dev        npm --save-dev switch.");
+	console.log("  -O, -save-optional   npm --save-optional switch.");
+	console.log("  -B, -save-bundle     npm --save-bundle switch.");
+	console.log("  -E, -save-exact      npm --save-exact switch.");
 	console.log("");
 	process.exit(0);
 }
