@@ -13,7 +13,8 @@
 	var rimraf = require("rimraf");
 	var is = require("is");
 	var Decompress = require("decompress");
-	
+	var npa = require("npm-package-arg");
+
 	var cwd = process.cwd();
 	var work = path.resolve(cwd,".npmbox.work");
 	var cache = path.resolve(cwd,".npmbox.cache");
@@ -84,6 +85,32 @@
 			callback(null,deps);
 		};
 
+		var lookupPackageDependencies = function(packageInfo) {
+			var children = [];
+			if (packageInfo.dependencies) {
+				Object.keys(packageInfo.dependencies).forEach(function(key){
+					var value = packageInfo.dependencies[key];
+					if (key && value) children.push(key+"@"+value);
+				});
+			}
+			if (packageInfo.optionalDependencies) {
+				Object.keys(packageInfo.optionalDependencies).forEach(function(key){
+					var value = packageInfo.optionalDependencies[key];
+					if (key && value) children.push(key+"@"+value);
+				});
+			}
+			// if (packageInfo.devDependencies) {
+			// 	Object.keys(packageInfo.devDependencies).forEach(function(key){
+			// 		var value = packageInfo.devDependencies[key];
+			// 		if (key && value) children.push(key+"@"+value);
+			// 	});
+			// }
+
+			children.forEach(function(childPackageName){
+				lookup(childPackageName);
+			});
+		};
+
 		var lookup = function(packageName) {
 			if (checked[packageName]) return;
 
@@ -94,44 +121,34 @@
 
 			if (!options.silent) console.log("  Querying "+packageName);
 
-			npm.commands.view(args,true,function(err,deps){
-				if (err && err.statusCode && err.statusCode===404) return done(packageName);
-				if (err) return callback(err);
-				if (!deps) return callback("Package '"+packageName+"' was not found in npm.");
+			var packageType = npa(packageName).type;
 
-				var found = Object.keys(deps).slice(-1)[0]; // we want the last entry.
-				if (found) {
-					var fullname = packageName.split(/@/g)[0] || packageName;
-					fullname += "@"+found;
-					results[fullname] = true;
+			if(packageType==="git" || packageType==="hosted") {
+				npm.commands.cache.add(packageName,null,null,false,function(err, packageInfo) {
+					if (err) return callback(err);
+					lookupPackageDependencies(packageInfo);
 
-					var children = [];
-					if (deps[found].dependencies) {
-						Object.keys(deps[found].dependencies).forEach(function(key){
-							var value = deps[found].dependencies[key];
-							if (key && value) children.push(key+"@"+value);
-						});
+					done(packageName);
+				});
+			}
+			else {
+				npm.commands.view(args,true,function(err,deps){
+					if (err && err.statusCode && err.statusCode===404) return done(packageName);
+					if (err) return callback(err);
+					if (!deps) return callback("Package '"+packageName+"' was not found in npm.");
+
+					var found = Object.keys(deps).slice(-1)[0]; // we want the last entry.
+					if (found) {
+						var fullname = packageName.split(/@/g)[0] || packageName;
+						fullname += "@"+found;
+						results[fullname] = true;
+
+						lookupPackageDependencies(deps[found]);
 					}
-					if (deps[found].optionalDependencies) {
-						Object.keys(deps[found].optionalDependencies).forEach(function(key){
-							var value = deps[found].optionalDependencies[key];
-							if (key && value) children.push(key+"@"+value);
-						});
-					}
-					// if (deps[found].devDependencies) {
-					// 	Object.keys(deps[found].devDependencies).forEach(function(key){
-					// 		var value = deps[found].devDependencies[key];
-					// 		if (key && value) children.push(key+"@"+value);
-					// 	});
-					// }
 
-					children.forEach(function(childPackageName){
-						lookup(childPackageName);
-					});
-				}
-
-				done(packageName);
-			});
+					done(packageName);
+				});
+			}
 		};
 
 		lookup(packageName);
@@ -167,8 +184,11 @@
 		});
 	};
 
+
+
 	var box = function(source,options,callback) {
-		var target = path.resolve(options.path,source+".npmbox");
+		var target;
+
 		if (fs.existsSync(target)) {
 			callback("An .npmbox file already exist with this name.  Please remove it and try again.");
 			return;
@@ -211,6 +231,36 @@
 			});
 		};
 
+		var setTarget = function (packageName) {
+			target = path.resolve(packageName+".npmbox");
+			if (fs.existsSync(target)) {
+				return done("An .npmbox file already exist with this name.  Please remove it and try again.");
+			}
+			rack();
+		};
+
+		var extractPackageName = function() {
+			var packageType;
+			try {
+				packageType = npa(source).type;
+			}
+			catch(e) {
+				return done(e);
+			}
+
+			if(packageType==="git" || packageType==="hosted") {
+				console.log("  Cloning "+source)
+				npm.commands.cache.add(source,null,null,false,function(err, packageInfo) {
+					if (err) return done(err);
+					if(packageInfo && packageInfo.name) return setTarget(packageInfo.name);
+					return done("Package has no name");
+				});
+			}
+			else {
+				setTarget(source);
+			}
+		};
+
 		var init = function() {
 			var npmoptions = {
 				cache: cache,
@@ -223,7 +273,7 @@
 
 			npmInit(npmoptions,function(err){
 				if (err) return done(err);
-				rack();
+				extractPackageName();
 			});
 		};
 
