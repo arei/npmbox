@@ -249,7 +249,7 @@
 			}
 
 			if(packageType==="git" || packageType==="hosted") {
-				console.log("  Cloning "+source)
+				console.log("  Cloning "+source);
 				npm.commands.cache.add(source,null,null,false,function(err, packageInfo) {
 					if (err) return done(err);
 					if(packageInfo && packageInfo.name) return setTarget(packageInfo.name);
@@ -268,6 +268,8 @@
 				global: true,
 				optional: true,
 				force: true,
+				progress: false,
+				"ignore-scripts": true,
 				loglevel: options && options.verbose ? "http" : "silent"
 			};
 
@@ -322,6 +324,8 @@
 		var init = function () {
 			options.cache = cache;
 			options.loglevel = options.verbose ? "verbose" : "silent";
+			options.progress = false;
+			options["ignore-scripts"] = true;
 			options["cache-min"] = 99999;
 			options["fetch-retries"] = 0;
 			options["fetch-retry-factor"] = 0;
