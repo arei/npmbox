@@ -1,7 +1,9 @@
 npmbox
 -------
 
-UPDATE March 10, 2015: v2.3.0 of npmbox is now available with a bug fix for permission problems across multiple operating systems.
+UPDATE June 28, 2016: v3.0.0 of npmbox is now available with upgrades all around and a bunch of small fixes.  Also, support for npmbox from git repos, which may help with some offline installs.
+
+Also worthy of note is that npm, inc. has begun thinking and working in how to do this within npm itself (and hopefully obsoletting this project entirely).  There's a good blog post over at npm, inc called "dealing with problematic dependencies in a restricted network environment" that details some of the problems: [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
 
 -------
 
