@@ -46,10 +46,10 @@
 	};
 
 	var tarExtract = function(source,target,callback) {
-		// new targz().extract(source,target,callback);
-
-		var decompress = new Decompress({
-			mode:755
+		// intentionally use decompress@2.3.0 as the upgrade didn't work the
+		// same way and the documentation was lacking.
+		var decompress = new Decompress(source,target,{
+			mode:755,
 		});
 		decompress.src(source);
 		decompress.dest(target);
@@ -63,7 +63,10 @@
 
 	var npmInstall = function(source,callback) {
 		if (!is.array(source)) source = [source];
-		npm.commands.install(source,callback);
+
+		npm.commands.install(source,function() {
+			callback.apply(this,arguments);
+		});
 	};
 
 	var npmDependencies = function(packageName,options,callback) {
@@ -269,6 +272,7 @@
 				optional: true,
 				force: true,
 				progress: false,
+				color: false,
 				"ignore-scripts": true,
 				loglevel: options && options.verbose ? "http" : "silent"
 			};
@@ -295,17 +299,19 @@
 		if (!fs.existsSync(cache)) fs.mkdirSync(cache);
 
 		var done = function(err) {
+			if (!options.silent) console.log("  Done.");
 			cleanAll(function(){
 				callback(err);
 			});
 		};
 
 		var install = function() {
-			if (!options.silent) console.log("Installing "+target+"...");
+			if (!options.silent) console.log("  Installing...");
+			process.stdout.write("    ");
 
 			var packageName = path.basename(target);
 
-			npmInstall([packageName],function(err){
+			npmInstall(packageName,function(err){
 				if (err) return done(err);
 				done();
 			});
@@ -313,7 +319,7 @@
 		};
 
 		var unpack = function() {
-			if (!options.silent) console.log("Unpacking "+target+"...");
+			if (!options.silent) console.log("  Unpacking...");
 
 			tarExtract(source,".",function(err){
 				if (err) return done(err);
@@ -325,6 +331,7 @@
 			options.cache = cache;
 			options.loglevel = options.verbose ? "verbose" : "silent";
 			options.progress = false;
+			options.color = false;
 			options["ignore-scripts"] = true;
 			options["cache-min"] = 99999;
 			options["fetch-retries"] = 0;

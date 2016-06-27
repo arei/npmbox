@@ -40,7 +40,7 @@ if (args.length<1 || argv.help) {
 	console.log("Options:");
 	console.log("");
 	console.log("  -v, -verbose         Shows npm output which is normally hidden.");
-	console.log("  -s, -silent          Shows additional output which is normally hidden.");
+	console.log("  -s, -silent          Hide all output.");
 	console.log("  -p, -path            Specify the path to a folder from which the .npmbox file(s) will be read.");
 	console.log("  -g, -global          Installs package globally as if --global was passed to npm.");
 	console.log("  -C, -prefix          npm --prefix switch.");
@@ -102,4 +102,3 @@ sources = sources.filter(function(source){
 
 if (sources && sources.length>0) unboxNext();
 else complete();
-

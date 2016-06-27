@@ -28,7 +28,7 @@ if (args.length<1 || argv.help) {
 	console.log("Options:");
 	console.log("");
 	console.log("  -v, -verbose         Shows additional output which is normally hidden.");
-	console.log("  -s, -silent          Shows additional output which is normally hidden.");
+	console.log("  -s, -silent          Hide all output.");
 	console.log("  -p, -path            Specify the path to a folder where the .npmbox file(s) will be written.");
 	console.log("");
 	process.exit(0);
