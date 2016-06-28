@@ -39,16 +39,16 @@ if (args.length<1 || argv.help) {
 	console.log("");
 	console.log("Options:");
 	console.log("");
-	console.log("  -v, -verbose         Shows npm output which is normally hidden.");
-	console.log("  -s, -silent          Hide all output.");
-	console.log("  -p, -path            Specify the path to a folder from which the .npmbox file(s) will be read.");
-	console.log("  -g, -global          Installs package globally as if --global was passed to npm.");
-	console.log("  -C, -prefix          npm --prefix switch.");
-	console.log("  -S, -save            npm --save switch.");
-	console.log("  -D, -save-dev        npm --save-dev switch.");
-	console.log("  -O, -save-optional   npm --save-optional switch.");
-	console.log("  -B, -save-bundle     npm --save-bundle switch.");
-	console.log("  -E, -save-exact      npm --save-exact switch.");
+	console.log("  -v, --verbose         Shows npm output which is normally hidden.");
+	console.log("  -s, --silent          Hide all output.");
+	console.log("  -p, --path            Specify the path to a folder from which the .npmbox file(s) will be read.");
+	console.log("  -g, --global          Installs package globally as if --global was passed to npm.");
+	console.log("  -C, --prefix          npm --prefix switch.");
+	console.log("  -S, --save            npm --save switch.");
+	console.log("  -D, --save-dev        npm --save-dev switch.");
+	console.log("  -O, --save-optional   npm --save-optional switch.");
+	console.log("  -B, --save-bundle     npm --save-bundle switch.");
+	console.log("  -E, --save-exact      npm --save-exact switch.");
 	console.log("");
 	process.exit(0);
 }
