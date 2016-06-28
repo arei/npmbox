@@ -139,6 +139,24 @@ NOTE: If you are running into issues where npmunbox is still trying to reach out
 
     npm cache clean
 
+## Common Problems
+
+Quick FAQ to hopefully answer some of the questions out there that seem to keep creeping up...
+
+1). Help Please!
+
+Sorry, I am only one person and I already have a full time job.  Using open source solutions come at the risk of almost no support. If after reading this entire faq you still think you have a bug, file a bug.  Or better yet, grab the source code, fix it, and submit a pull request.  I love pull requests.
+
+2). npmunbox keep trying to connect to registry.npmjs.org on my offline system.
+
+99% of the time this occurs is because the npmbox didn't get some resource that npmunbox is looking for and cannot find in the npmbox file. This happens.  There are TONS of edge cases that npmbox misses.  Two worth nothing:
+  * Some packages reference git repos instead of npm packages.  This has been fixed as of version 3.0 of npmbox.  Very exciting.
+  * Packages that execute external scripts that call out to git repos or npm are entirely outside of the controll of npmbox.  Not much we can do about that.
+
+3). When is npm going to add this functionality?
+
+npm, inc. is actively working on this problem as we speak.  Read this blog post for some of the challenges they are facing:  [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
+
 ## TO DO
 
 - Right now specifying multiple packages creates multiple .npmbox files.  Make it create just one .npmbox file by default.  Maybe allow a switch (-multi) to make it generate multiple.
