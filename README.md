@@ -153,7 +153,11 @@ Sorry, I am only one person and I already have a full time job.  Using open sour
   * Some packages reference git repos instead of npm packages.  This has been fixed as of version 3.0 of npmbox.  Very exciting.
   * Packages that execute external scripts that call out to git repos or npm are entirely outside of the controll of npmbox.  Not much we can do about that.
 
-3). When is npm going to add this functionality?
+3). When I run the command described above to install npmbox on my offline machine I get an error.
+
+This if frequently caused by incorrectly referencing where the ```.npmbox-cache``` file is.  Please check the section of the command ```---cache .\.npmbox-cache``` and make sure it is pointing at the correct location.
+
+4). When is npm going to add this functionality?
 
 npm, inc. is actively working on this problem as we speak.  Read this blog post for some of the challenges they are facing:  [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
 
