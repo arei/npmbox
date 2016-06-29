@@ -12,9 +12,14 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## npmbox news
 
-UPDATE June 29, 2016: v3.1.0 of npmbox is out.  This release drops the usage of the decompress library. And finally manage to suppress the npm install console output! Hooray!
-
-UPDATE June 28, 2016: v3.0.0 of npmbox is now available with upgrades all around and a bunch of small fixes.  Also, support for npmbox from git repos, which may help with some offline installs.
+UPDATE June 29, 2016: v3.1.1 of npmbox is out.
+  * This release drops the usage of the decompress library.
+  * Upgrades all the dependencies.
+  * Upgrades npm version.
+  * Upgrades node version.
+  * Adds support for git repos as packages.
+  * Fixes a bunch of bugs including locking errors with multiple unboxes.
+  * and finally manage to suppress the npm install console output! Hooray!
 
 Also worthy of note is that npm, inc. has begun thinking and working in how to do this within npm itself (and hopefully obsoletting this project entirely).  There's a good blog post over at npm, inc called "dealing with problematic dependencies in a restricted network environment" that details some of the problems: [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
 
