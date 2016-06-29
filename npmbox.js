@@ -5,7 +5,7 @@
 
 "use strict";
 
-var box = require("./npmboxxer.js").box;
+var boxxer = require("./npmboxxer.js");
 var utils = require("./utils.js");
 
 var argv = require("optimist")
@@ -55,19 +55,21 @@ var boxDone = function(err) {
 			console.error(" ",arg);
 		});
 	}
-	boxNext();
+	boxxer.cleanup(function(){
+		boxNext();
+	});
 };
 
 var boxNext = function() {
 	var source = sources.shift();
-	if (!source) complete();
+	if (!source) return complete();
 
 	boxExecute(source);
 };
 
 var boxExecute = function(source) {
 	if (!options.silent) console.log("\nBoxing "+source+"...");
-	box(source,options,boxDone);
+	boxxer.box(source,options,boxDone);
 };
 
 sources = sources.filter(function(source){

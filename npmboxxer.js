@@ -21,7 +21,14 @@
 	var cleanCache = function(callback) {
 		process.chdir(cwd);
 
-		if (fs.existsSync(cache)) rimraf(cache,callback);
+		var wait = function() {
+			if (fs.existsSync(cache)) {
+				setTimeout(wait,100);
+			}
+			else callback();
+		};
+
+		if (fs.existsSync(cache)) rimraf(cache,wait);
 		else callback();
 	};
 
@@ -197,12 +204,8 @@
 		}
 		fs.mkdirSync(cache);
 
-		var done = function(err) {
-			var args = arguments;
-			cleanAll(function(){
-				if (!err && !options.silent) console.log("  Done.");
-				callback.apply(null,args);
-			});
+		var done = function() {
+			callback.apply(this,arguments);
 		};
 
 		var pack = function() {
@@ -245,11 +248,11 @@
 				return done(e);
 			}
 
-			if(packageType==="git" || packageType==="hosted") {
+			if (packageType==="git" || packageType==="hosted") {
 				console.log("  Cloning "+source);
 				npm.commands.cache.add(source,null,null,false,function(err, packageInfo) {
 					if (err) return done(err);
-					if(packageInfo && packageInfo.name) return setTarget(packageInfo.name);
+					if (packageInfo && packageInfo.name) return setTarget(packageInfo.name);
 					return done("Package has no name");
 				});
 			}
@@ -294,9 +297,7 @@
 
 		var done = function(err) {
 			if (!options.silent) console.log("  Done.");
-			cleanAll(function(){
-				callback(err);
-			});
+			callback(err);
 		};
 
 		var install = function() {
@@ -305,7 +306,12 @@
 			var packageName = path.basename(target);
 
 			npmInstall(packageName,function(err){
-				if (err) return done(err);
+				if (err) {
+					if (!options.silent) console.log("An error occurred while installing "+packageName+".");
+					if (!options.silent) console.log(packageName+" was not installed.");
+					if (options.verbose) console.log(err);
+					return done();
+				}
 				done();
 			});
 
@@ -315,7 +321,13 @@
 			if (!options.silent) console.log("  Unpacking...");
 
 			tarExtract(source,".",function(err){
-				if (err) return done(err);
+				if (err) {
+					var packageName = path.basename(target);
+					if (!options.silent) console.log("An error occurred while unpacking "+packageName+".");
+					if (!options.silent) console.log(packageName+" was not installed.");
+					if (options.verbose) console.log(err);
+					return done();
+				}
 				install();
 			});
 		};
@@ -325,7 +337,6 @@
 			options.loglevel = options.verbose ? "verbose" : "silent";
 			options.progress = false;
 			options.color = false;
-			options.loglevel = "silent";
 			options["ignore-scripts"] = true;
 			options["cache-min"] = 99999;
 			options["fetch-retries"] = 0;
@@ -342,9 +353,16 @@
 		init();
 	};
 
+	var cleanup = function(callback) {
+		cleanAll(function(err){
+			callback(err);
+		});
+	};
+
 	module.exports = {
 		box: box,
-		unbox: unbox
+		unbox: unbox,
+		cleanup: cleanup
 	};
 
 })();

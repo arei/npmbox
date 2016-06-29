@@ -5,7 +5,7 @@
 
 "use strict";
 
-var unbox = require("./npmboxxer.js").unbox;
+var boxxer = require("./npmboxxer.js");
 var utils = require("./utils");
 
 var argv = require("optimist")
@@ -70,7 +70,9 @@ var sources = args;
 var errorCount = 0;
 
 var complete = function() {
-	process.reallyExit(errorCount);
+	boxxer.cleanup(function(){
+		process.reallyExit(errorCount);
+	});
 };
 
 var unboxDone = function(err) {
@@ -86,14 +88,14 @@ var unboxDone = function(err) {
 
 var unboxNext = function() {
 	var source = sources.shift();
-	if (!source) complete();
+	if (!source) return complete();
 
 	unboxExecute(source);
 };
 
 var unboxExecute = function(source) {
 	if (!options.silent) console.log("\nUnboxing "+source+"...");
-	unbox(source,options,unboxDone);
+	boxxer.unbox(source,options,unboxDone);
 };
 
 sources = sources.filter(function(source){
