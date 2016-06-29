@@ -12,7 +12,6 @@
 	var targz = require("tar.gz");
 	var rimraf = require("rimraf");
 	var is = require("is");
-	var Decompress = require("decompress");
 	var npa = require("npm-package-arg");
 
 	var cwd = process.cwd();
@@ -42,19 +41,11 @@
 	};
 
 	var tarCreate = function(source,target,callback) {
-		new targz(6,6,false).compress(source,target,callback);
+		new targz().compress(source,target,callback);
 	};
 
 	var tarExtract = function(source,target,callback) {
-		// intentionally use decompress@2.3.0 as the upgrade didn't work the
-		// same way and the documentation was lacking.
-		var decompress = new Decompress(source,target,{
-			mode:755,
-		});
-		decompress.src(source);
-		decompress.dest(target);
-		decompress.use(Decompress.targz({}));
-		decompress.run(callback);
+		new targz().extract(source,target,callback);
 	};
 
 	var npmInit = function(options,callback) {
@@ -307,7 +298,6 @@
 
 		var install = function() {
 			if (!options.silent) console.log("  Installing...");
-			process.stdout.write("    ");
 
 			var packageName = path.basename(target);
 
@@ -332,6 +322,7 @@
 			options.loglevel = options.verbose ? "verbose" : "silent";
 			options.progress = false;
 			options.color = false;
+			options.loglevel = "silent";
 			options["ignore-scripts"] = true;
 			options["cache-min"] = 99999;
 			options["fetch-retries"] = 0;
