@@ -55,7 +55,10 @@
 	var npmInstall = function(source,callback) {
 		if (!is.array(source)) source = [source];
 
+		var cl = console.log;
+		console.log = function() {};
 		npm.commands.install(source,function() {
+			console.log = cl;
 			callback.apply(this,arguments);
 		});
 	};
