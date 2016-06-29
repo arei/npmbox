@@ -1,21 +1,20 @@
-npmbox
--------
-
-UPDATE June 28, 2016: v3.0.0 of npmbox is now available with upgrades all around and a bunch of small fixes.  Also, support for npmbox from git repos, which may help with some offline installs.
-
-Also worthy of note is that npm, inc. has begun thinking and working in how to do this within npm itself (and hopefully obsoletting this project entirely).  There's a good blog post over at npm, inc called "dealing with problematic dependencies in a restricted network environment" that details some of the problems: [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
-
--------
-
 [![Build Status](https://travis-ci.org/arei/npmbox.svg)](https://travis-ci.org/arei/npmbox)
 
 [![NPM](https://nodei.co/npm/npmbox.png)](https://nodei.co/npm/npmbox/)
 
 -------
 
+## What is npmbox?
+
 npm addon utility for creating and installing from an archive file of an npm install, including dependencies.  This lets you create a "box" of an installable package and move it to an offline system that will only install from that box.
 
 npmbox is intended to be a proof of concept with regards to this issue filled against this npm feature request: [[Feature] Bundle/Include Dependencies](https://github.com/isaacs/npm/issues/4210).  Ideally, we would like to see the npmbox functionality built into npm so a third party tool like npmbox is not required or necessary. Please go add your support over at that ticket to help get us some visibility... or, even better, go write the code!
+
+## npmbox news
+
+UPDATE June 28, 2016: v3.0.0 of npmbox is now available with upgrades all around and a bunch of small fixes.  Also, support for npmbox from git repos, which may help with some offline installs.
+
+Also worthy of note is that npm, inc. has begun thinking and working in how to do this within npm itself (and hopefully obsoletting this project entirely).  There's a good blog post over at npm, inc called "dealing with problematic dependencies in a restricted network environment" that details some of the problems: [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
 
 ## Usage of `npmbox`
 
