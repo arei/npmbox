@@ -1,1 +1,6 @@
 node_modules
+*.npmbox
+.vscode
+.npmbox.cache
+.npmbox.work
+.npmbox.multi
