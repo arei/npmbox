@@ -14,6 +14,10 @@ var argv = require("optimist")
 		alias: "path",
 		default: process.cwd()
 	})
+	.options("t", {
+		alias: "target",
+		default: "box"
+	})
 	.argv;
 
 var args = argv._;
@@ -30,6 +34,7 @@ if (args.length<1 || argv.help) {
 	console.log("  -v, --verbose         Shows additional output which is normally hidden.");
 	console.log("  -s, --silent          Hide all output.");
 	console.log("  -p, --path            Specify the path to a folder where the .npmbox file(s) will be written.");
+	console.log("  -t, --target          Specify the target output name in case of multiple packages")
 	console.log("");
 	process.exit(0);
 }
@@ -37,13 +42,18 @@ if (args.length<1 || argv.help) {
 var options = {
 	verbose: argv.v || argv.verbose || false,
 	silent: argv.s || argv.silent || false,
-	path: argv.p || argv.path || false
+	path: argv.p || argv.path || false,
+	target: argv.t || argv.target || false,
 };
 
 var sources = args;
+var multiple = false;
+var initial = true;
 var errorCount = 0;
 
 var complete = function() {
+	if (!options.silent) console.log("\nCompleted");
+
 	process.reallyExit(errorCount);
 };
 
@@ -63,18 +73,29 @@ var boxDone = function(err) {
 var boxNext = function() {
 	var source = sources.shift();
 	if (!source) return complete();
+	var part = boxxer.boxPart.Single;
 
-	boxExecute(source);
+	if (multiple) {
+		if (initial) part = boxxer.boxPart.Initial;
+		else if (sources.length == 0) part = boxxer.boxPart.Final;
+		else part = boxxer.boxPart.Transient;
+	}
+
+	boxExecute(source,part);
+	initial = false;
 };
 
-var boxExecute = function(source) {
+var boxExecute = function(source,part) {
 	if (!options.silent) console.log("\nBoxing "+source+"...");
-	boxxer.box(source,options,boxDone);
+	boxxer.box(source,part,options,boxDone);
 };
 
 sources = sources.filter(function(source){
 	return !!source;
 });
 
-if (sources && sources.length>0) boxNext();
+if (sources && sources.length>0) {
+	multiple = sources.length>1;
+	boxNext();
+}
 else complete();

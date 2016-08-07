@@ -17,6 +17,14 @@
 	var cwd = process.cwd();
 	var work = path.resolve(cwd,".npmbox.work");
 	var cache = path.resolve(cwd,".npmbox.cache");
+	var multi = path.resolve(cwd,".npmbox.multi")
+
+	var boxPart = {
+		Initial : 0,
+		Transient : 1,
+		Final : 2,
+		Single : 3
+	}
 
 	var cleanCache = function(callback) {
 		process.chdir(cwd);
@@ -38,6 +46,13 @@
 		if (fs.existsSync(work)) rimraf(work,callback);
 		else callback();
 	};
+
+	var cleanMulti = function(callback) {
+		process.chdir(cwd);
+		
+		if(fs.existsSync(multi)) rimraf(multi,callback);
+		else callback();
+	}
 
 	var cleanAll = function(callback) {
 		cleanCache(function(){
@@ -190,8 +205,9 @@
 
 
 
-	var box = function(source,options,callback) {
+	var box = function(source,part,options,callback) {
 		var target;
+		var multiTarget;
 
 		if (fs.existsSync(target)) {
 			callback("An .npmbox file already exist with this name.  Please remove it and try again.");
@@ -202,6 +218,13 @@
 			callback("An .npmbox.cache folder already exist and might conflict.  Please remove it first or work from a different directory.");
 			return;
 		}
+
+		if (part == boxPart.Initial && fs.existsSync(multi)) {
+			callback("An .npmbox.multi folder already exists and might conflict. Please remove it first or work from a different directory.");
+			return;
+		}
+
+		if (part == boxPart.Initial) fs.mkdirSync(multi);
 		fs.mkdirSync(cache);
 
 		var done = function() {
@@ -213,7 +236,19 @@
 
 			tarCreate(cache,target,function(err){
 				if (err) return done(err);
-				done();
+
+				if (part == boxPart.Final) {
+					if (!options.silent) console.log("Merging invididual packages into "+multiTarget+" ...");
+					tarCreate(multi, multiTarget, function(err){
+						if (err) return done(err);
+
+						cleanMulti(function(){
+							done();
+						});
+					})
+				} else {
+					done();
+				}
 			});
 		};
 
@@ -232,10 +267,26 @@
 		};
 
 		var setTarget = function (packageName) {
-			target = path.resolve(packageName+".npmbox");
+			if (part == boxPart.Single) {
+				target = path.resolve(packageName+".npmbox");
+			} else {
+				target = path.resolve(multi,packageName+".npmbox");
+				multiTarget = path.resolve(options.target+".npmbox");
+			}
+
 			if (fs.existsSync(target)) {
 				return done("An .npmbox file already exist with this name.  Please remove it and try again.");
 			}
+
+			if (part != boxPart.Single && fs.existsSync(multiTarget)) {
+				var message = "The file '" + options.target + ".npmbox' already exists. Please remove it and try again.";
+				if (part == boxPart.Final) {
+					cleanMulti(function(){});
+				}
+				
+				return done(message);
+			}
+
 			rack();
 		};
 
@@ -283,8 +334,10 @@
 		init();
 	};
 
-	var unbox = function(source,options,callback) {
+	var unbox = function(source,options,callback,callbackmulti) {
+		var partOfMulti = path.dirname(source) == multi;
 		var target = source.replace(/\.npmbox$/,"");
+
 		if (!fs.existsSync(source)) {
 			source = path.resolve(options.path,source+".npmbox");
 			if (!fs.existsSync(source)) {
@@ -328,7 +381,19 @@
 					if (options.verbose) console.log(err);
 					return done();
 				}
-				install();
+				
+				if (!partOfMulti && fs.existsSync(multi)) {
+					var packages = [];
+
+					fs.readdirSync(multi).forEach(function(subPackage){
+						if (!options.silent) console.log("  Scheduling '" + subPackage + "' as part of multi npmbox");
+						packages.push(path.resolve(multi,subPackage));
+					});
+
+					callbackmulti(packages);
+				} else {
+					install();
+				}
 			});
 		};
 
@@ -350,7 +415,17 @@
 			});
 		};
 
-		init();
+		if (!partOfMulti && fs.existsSync(multi)) {
+			cleanMulti(function(err){
+				if (err) {
+					done(err);
+				} else {
+					init();
+				}
+			});
+		} else {
+			init();
+		}
 	};
 
 	var cleanup = function(callback) {
@@ -359,10 +434,20 @@
 		});
 	};
 
+	var cleanupWithMulti = function(callback) {
+		cleanup(function(err){
+			cleanMulti(function(err){
+				callback(err);
+			});
+		});
+	}
+
 	module.exports = {
+		boxPart: boxPart,
 		box: box,
 		unbox: unbox,
-		cleanup: cleanup
+		cleanup: cleanup,
+		cleanupWithMulti: cleanupWithMulti
 	};
 
 })();
