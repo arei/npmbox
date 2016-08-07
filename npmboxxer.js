@@ -220,7 +220,7 @@
 		}
 
 		if (part == boxPart.Initial && fs.existsSync(multi)) {
-			callback("An .npmbox.cache.multi folder already exists and might conflict. Please remove it first or work from a different directory.");
+			callback("An .npmbox.multi folder already exists and might conflict. Please remove it first or work from a different directory.");
 			return;
 		}
 
@@ -334,8 +334,10 @@
 		init();
 	};
 
-	var unbox = function(source,options,callback) {
+	var unbox = function(source,options,callback,callbackmulti) {
+		var partOfMulti = path.dirname(source) == multi;
 		var target = source.replace(/\.npmbox$/,"");
+
 		if (!fs.existsSync(source)) {
 			source = path.resolve(options.path,source+".npmbox");
 			if (!fs.existsSync(source)) {
@@ -379,7 +381,19 @@
 					if (options.verbose) console.log(err);
 					return done();
 				}
-				install();
+				
+				if (!partOfMulti && fs.existsSync(multi)) {
+					var packages = [];
+
+					fs.readdirSync(multi).forEach(function(subPackage){
+						if (!options.silent) console.log("  Scheduling '" + subPackage + "' as part of multi npmbox");
+						packages.push(path.resolve(multi,subPackage));
+					});
+
+					callbackmulti(packages);
+				} else {
+					install();
+				}
 			});
 		};
 
@@ -401,7 +415,17 @@
 			});
 		};
 
-		init();
+		if (!partOfMulti && fs.existsSync(multi)) {
+			cleanMulti(function(err){
+				if (err) {
+					done(err);
+				} else {
+					init();
+				}
+			});
+		} else {
+			init();
+		}
 	};
 
 	var cleanup = function(callback) {
@@ -410,11 +434,20 @@
 		});
 	};
 
+	var cleanupWithMulti = function(callback) {
+		cleanup(function(err){
+			cleanMulti(function(err){
+				callback(err);
+			});
+		});
+	}
+
 	module.exports = {
 		boxPart: boxPart,
 		box: box,
 		unbox: unbox,
 		cleanup: cleanup,
+		cleanupWithMulti: cleanupWithMulti
 	};
 
 })();

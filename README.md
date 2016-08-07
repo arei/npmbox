@@ -39,7 +39,7 @@ Given some package, like `express` this command will create a archive file of th
 		-v, --verbose         Shows npm output which is normally hidden.
 		-s, --silent          Shows no output whatsoever.
 		-p, --path            Specify the path to a folder where the .npmbox file(s) will be written.
-		-t, --target          Specify the target output name in case of multiple packages"
+		-t, --target          Specify the target output name in case of multiple packages.
 
 You must specify at least one package.
 

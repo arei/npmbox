@@ -70,7 +70,7 @@ var sources = args;
 var errorCount = 0;
 
 var complete = function() {
-	boxxer.cleanup(function(){
+	boxxer.cleanupWithMulti(function(){
 		process.reallyExit(errorCount);
 	});
 };
@@ -86,6 +86,11 @@ var unboxDone = function(err) {
 	unboxNext();
 };
 
+var unboxMultiDone = function(packages) {
+	sources = packages.concat(sources);
+	unboxNext();
+};
+
 var unboxNext = function() {
 	var source = sources.shift();
 	if (!source) return complete();
@@ -95,7 +100,7 @@ var unboxNext = function() {
 
 var unboxExecute = function(source) {
 	if (!options.silent) console.log("\nUnboxing "+source+"...");
-	boxxer.unbox(source,options,unboxDone);
+	boxxer.unbox(source,options,unboxDone,unboxMultiDone);
 };
 
 sources = sources.filter(function(source){
