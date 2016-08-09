@@ -188,24 +188,18 @@
 		});
 	};
 
-
-
 	var box = function(source,options,callback) {
-		var target;
+		var done = function(err) {
+			cleanAll(function(){
+				callback.call(this,err);
+			});
+		};
 
-		if (fs.existsSync(target)) {
-			callback("An .npmbox file already exist with this name.  Please remove it and try again.");
-			return;
-		}
+		var next = function() {
+			source = sources.shift();
 
-		if (fs.existsSync(cache)) {
-			callback("An .npmbox.cache folder already exist and might conflict.  Please remove it first or work from a different directory.");
-			return;
-		}
-		fs.mkdirSync(cache);
-
-		var done = function() {
-			callback.apply(this,arguments);
+			if (!source) pack();
+			else extractPackageName();
 		};
 
 		var pack = function() {
@@ -220,11 +214,14 @@
 		var stack = function(deps) {
 			npmDownload(deps,options,function(err){
 				if (err) return done(err);
-				pack(deps);
+				next();
 			});
 		};
 
 		var rack = function() {
+			var flagfile = path.resolve(cache,source+".npmbox");
+			fs.writeFileSync(flagfile,source);
+
 			npmDependencies(source,options,function(err,deps){
 				if (err) return done(err);
 				stack(deps);
@@ -234,9 +231,8 @@
 		var setTarget = function (packageName) {
 			target = path.resolve(packageName+".npmbox");
 			if (fs.existsSync(target)) {
-				return done("An .npmbox file already exist with this name.  Please remove it and try again.");
+				return done("An .npmbox file already exists with this name.  Please remove it and try again.");
 			}
-			rack();
 		};
 
 		var extractPackageName = function() {
@@ -252,12 +248,16 @@
 				console.log("  Cloning "+source);
 				npm.commands.cache.add(source,null,null,false,function(err, packageInfo) {
 					if (err) return done(err);
-					if (packageInfo && packageInfo.name) return setTarget(packageInfo.name);
+					if (packageInfo && packageInfo.name) {
+						if (!target) setTarget(packageInfo.name);
+						rack();
+					}
 					return done("Package has no name");
 				});
 			}
 			else {
-				setTarget(source);
+				if (!target) setTarget(source);
+				rack();
 			}
 		};
 
@@ -276,15 +276,33 @@
 
 			npmInit(npmoptions,function(err){
 				if (err) return done(err);
-				extractPackageName();
+
+				if (fs.existsSync(cache)) {
+					callback("An .npmbox.cache folder already exist and might conflict.  Please remove it first or work from a different directory.");
+					return;
+				}
+				fs.mkdirSync(cache);
+
+				next();
 			});
 		};
+
+		var target = options.target && path.resolve(options.target) || null;
+		if (target) setTarget(target);
+
+		var sources = source && source instanceof Array && source || source && [source] || [];
+		source = source.filter(function(source){
+			return !!source;
+		});
+		source = null;
 
 		init();
 	};
 
 	var unbox = function(source,options,callback) {
-		var target = source.replace(/\.npmbox$/,"");
+		var targets = [];
+		var target = null;
+
 		if (!fs.existsSync(source)) {
 			source = path.resolve(options.path,source+".npmbox");
 			if (!fs.existsSync(source)) {
@@ -297,11 +315,20 @@
 
 		var done = function(err) {
 			if (!options.silent) console.log("  Done.");
-			callback(err);
+			cleanAll(function(){
+				callback(err);
+			});
+		};
+
+		var next = function() {
+			target = targets.shift();
+			if (!target) return done();
+
+			install();
 		};
 
 		var install = function() {
-			if (!options.silent) console.log("  Installing...");
+			if (!options.silent) console.log("  Installing "+target+"...");
 
 			var packageName = path.basename(target);
 
@@ -312,13 +339,29 @@
 					if (options.verbose) console.log(err);
 					return done();
 				}
-				done();
+				next();
 			});
+		};
 
+		var getTargets = function() {
+			targets = {};
+			targets[path.basename(source).replace(/\.npmbox$/,"")] = true;
+
+			fs.readdir(cache,function(err,files){
+				if (err) return done(err);
+				files.filter(function(file){
+					return file.match(/\.npmbox$/);
+				}).forEach(function(file){
+					file = path.basename(file).replace(/\.npmbox$/,"");
+					targets[file] = true;
+				});
+				targets = Object.keys(targets);
+				next();
+			});
 		};
 
 		var unpack = function() {
-			if (!options.silent) console.log("  Unpacking...");
+			if (!options.silent) console.log("  Unpacking "+source+"...");
 
 			tarExtract(source,".",function(err){
 				if (err) {
@@ -328,7 +371,7 @@
 					if (options.verbose) console.log(err);
 					return done();
 				}
-				install();
+				getTargets();
 			});
 		};
 

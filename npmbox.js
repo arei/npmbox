@@ -6,13 +6,12 @@
 "use strict";
 
 var boxxer = require("./npmboxxer.js");
-var utils = require("./utils.js");
 
 var argv = require("optimist")
 	.boolean(["v","verbose","s","silent"])
-	.options("p", {
-		alias: "path",
-		default: process.cwd()
+	.options("t", {
+		alias: "target",
+		default: null
 	})
 	.argv;
 
@@ -29,7 +28,7 @@ if (args.length<1 || argv.help) {
 	console.log("");
 	console.log("  -v, --verbose         Shows additional output which is normally hidden.");
 	console.log("  -s, --silent          Hide all output.");
-	console.log("  -p, --path            Specify the path to a folder where the .npmbox file(s) will be written.");
+	console.log("  -t, --target          Specify the target .npmbox file to write.");
 	console.log("");
 	process.exit(0);
 }
@@ -37,44 +36,22 @@ if (args.length<1 || argv.help) {
 var options = {
 	verbose: argv.v || argv.verbose || false,
 	silent: argv.s || argv.silent || false,
-	path: argv.p || argv.path || false
+	target: argv.t || argv.target || null
 };
 
 var sources = args;
-var errorCount = 0;
 
-var complete = function() {
-	process.reallyExit(errorCount);
-};
-
-var boxDone = function(err) {
-	if (err) {
-		var args = utils.flatten(utils.toArray(arguments));
-		args.forEach(function(arg){
-			errorCount += 1;
-			console.error(" ",arg);
-		});
-	}
-	boxxer.cleanup(function(){
-		boxNext();
-	});
-};
-
-var boxNext = function() {
-	var source = sources.shift();
-	if (!source) return complete();
-
-	boxExecute(source);
-};
-
-var boxExecute = function(source) {
-	if (!options.silent) console.log("\nBoxing "+source+"...");
-	boxxer.box(source,options,boxDone);
+var complete = function(err) {
+	if (err) console.log("\nERROR: ",err,"\n\nnpmbox halted.");
+	process.reallyExit(err?1:0);
 };
 
 sources = sources.filter(function(source){
 	return !!source;
 });
+if (sources && sources.length>0) {
 
-if (sources && sources.length>0) boxNext();
+	if (!options.silent) console.log("\nBoxing "+sources.join(", ")+"...");
+	boxxer.box(sources,options,complete);
+}
 else complete();

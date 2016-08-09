@@ -12,14 +12,10 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## npmbox news
 
-UPDATE June 29, 2016: v3.1.1 of npmbox is out.
-  * This release drops the usage of the decompress library.
-  * Upgrades all the dependencies.
-  * Upgrades npm version.
-  * Upgrades node version.
-  * Adds support for git repos as packages.
-  * Fixes a bunch of bugs including locking errors with multiple unboxes.
-  * and finally manage to suppress the npm install console output! Hooray!
+UPDATE August 9, 2016: v4.0.0 of npmbox is out.
+  * Support for bundling multiple packages into a single .npmbox file! (Hooray!)
+  * Roll back version of tar.gz lib to solve large tar file bug.
+  * Fix error where npmbox would not give an error on a failure.
 
 Also worthy of note is that npm, inc. has begun thinking and working in how to do this within npm itself (and hopefully obsoletting this project entirely).  There's a good blog post over at npm, inc called "dealing with problematic dependencies in a restricted network environment" that details some of the problems: [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
 
@@ -38,11 +34,11 @@ Given some package, like `express` this command will create a archive file of th
 
 		-v, --verbose         Shows npm output which is normally hidden.
 		-s, --silent          Shows no output whatsoever.
-		-p, --path            Specify the path to a folder where the .npmbox file(s) will be written.
+		-t, --target          Specify the .npmbox file to write.
 
 You must specify at least one package.
 
-You can specify more than one package and a separate archive will be created for each specified.
+*NEW*: You can specify more than one package and all packages will be bundled into a single archive.
 
 npmbox files end with the .npmbox extension.
 
@@ -78,6 +74,8 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
 You must specify at least one file.
 
 You may specify more than one file, and each will be installed.
+
+*NEW*: If an .npmbox file contains multiple packages, unboxing the .npmbox will install ALL of those packages.
 
 ## Using `npmunbox` without npmbox being installed
 
@@ -167,6 +165,10 @@ This if frequently caused by incorrectly referencing where the ```.npmbox-cache`
 
 npm, inc. is actively working on this problem as we speak.  Read this blog post for some of the challenges they are facing:  [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
 
-## TO DO
+5). I used to be able to create multiple .npmbox files with a single command. Why did that change.
 
-- Right now specifying multiple packages creates multiple .npmbox files.  Make it create just one .npmbox file by default.  Maybe allow a switch (-multi) to make it generate multiple.
+In order to support multiple npm packages in a single .npmbox file we had to change how this works.  It's still possible to create multiple .npmbox per package, but you will just need to runt he command multiple times.
+
+6). But I wanted it to work the old way with one .npmbox file per package.
+
+Sorry.  The multiple packages per single file change is a big deal.  It lets you create a single .npmbox with multiple packages but without redundent libraries being include multiple times.  So nice. Multiple packages in a single .npmbox file also lets you unbox a single .npmbox file and get multiple installs.
