@@ -125,7 +125,8 @@
 
 			if (!options.silent) console.log("  Querying "+packageName);
 
-			var packageType = npa(packageName).type;
+			var packageDetails = npa(packageName);
+			var packageType = packageDetails && packageDetails.type || null;
 
 			if(packageType==="git" || packageType==="hosted") {
 				npm.commands.cache.add(packageName,null,null,false,function(err, packageInfo) {
@@ -143,7 +144,7 @@
 
 					var found = Object.keys(deps).slice(-1)[0]; // we want the last entry.
 					if (found) {
-						var fullname = packageName.split(/@/g)[0] || packageName;
+						var fullname = packageDetails && packageDetails.name || packageName;
 						fullname += "@"+found;
 						results[fullname] = true;
 
