@@ -346,7 +346,6 @@
 
 		var getTargets = function() {
 			targets = {};
-			targets[path.basename(source).replace(/\.npmbox$/,"")] = true;
 
 			// Unfortunately, the `tar.gz` package at v1.0.2 will
 			// sometimes make its callback before it's done
@@ -376,6 +375,12 @@
 					});
 
 					targets = Object.keys(targets);
+					if (targets.length === 0) {
+						// This is a legacy `.npmbox` file which instead of having embedded flag
+						// files just uses the name of the archive file to determine what to
+						// install.
+						targets = [path.basename(source).replace(/\.npmbox$/,"")];
+					}
 					next();
 				});
 			};
