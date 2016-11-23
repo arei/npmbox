@@ -346,19 +346,46 @@
 
 		var getTargets = function() {
 			targets = {};
-			targets[path.basename(source).replace(/\.npmbox$/,"")] = true;
 
-			fs.readdir(cache,function(err,files){
-				if (err) return done(err);
-				files.filter(function(file){
-					return file.match(/\.npmbox$/);
-				}).forEach(function(file){
-					file = path.basename(file).replace(/\.npmbox$/,"");
-					targets[file] = true;
+			// Unfortunately, the `tar.gz` package at v1.0.2 will
+			// sometimes make its callback before it's done
+			// extracting all the files, but _later_ versions of the
+			// package have other bugs that prevent extraction from
+			// working at all. What we do here is keep `readdir`ing
+			// until the contents of the directory settle.
+			var dirCount = -1;
+			var doScan = function() {
+				fs.readdir(cache,function(err,files){
+					if (err) return done(err);
+
+					if (files.length !== dirCount) {
+						// Wait a moment to see if more
+						// files get extracted. See
+						// comment above.
+						dirCount = files.length;
+						setTimeout(doScan, 250);
+						return;
+					}
+
+					files.filter(function(file){
+						return file.match(/\.npmbox$/);
+					}).forEach(function(file){
+						file = path.basename(file).replace(/\.npmbox$/,"");
+						targets[file] = true;
+					});
+
+					targets = Object.keys(targets);
+					if (targets.length === 0) {
+						// This is a legacy `.npmbox` file which instead of having embedded flag
+						// files just uses the name of the archive file to determine what to
+						// install.
+						targets = [path.basename(source).replace(/\.npmbox$/,"")];
+					}
+					next();
 				});
-				targets = Object.keys(targets);
-				next();
-			});
+			};
+
+			doScan();
 		};
 
 		var unpack = function() {
