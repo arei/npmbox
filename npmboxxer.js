@@ -13,6 +13,7 @@
 	var rimraf = require("rimraf");
 	var is = require("is");
 	var npa = require("npm-package-arg");
+	var readJson = require("read-package-json");
 
 	var cwd = process.cwd();
 	var work = path.resolve(cwd,".npmbox.work");
@@ -70,6 +71,23 @@
 		});
 	};
 
+	var getPackageDependencies = function(packageInfo) {
+		var packageDeps = [];
+		if (packageInfo.dependencies) {
+			Object.keys(packageInfo.dependencies).forEach(function(key){
+				var value = packageInfo.dependencies[key] || "latest";
+				if (key && value) packageDeps.push(key+"@"+value);
+			});
+		}
+		if (packageInfo.optionalDependencies) {
+			Object.keys(packageInfo.optionalDependencies).forEach(function(key){
+				var value = packageInfo.optionalDependencies[key] || "latest";
+				if (key && value) packageDeps.push(key+"@"+value);
+			});
+		}
+		return packageDeps;
+	};
+
 	var npmDependencies = function(packageName,options,callback) {
 		if (!packageName) return callback(null);
 
@@ -90,19 +108,7 @@
 		};
 
 		var lookupPackageDependencies = function(packageInfo) {
-			var children = [];
-			if (packageInfo.dependencies) {
-				Object.keys(packageInfo.dependencies).forEach(function(key){
-					var value = packageInfo.dependencies[key];
-					if (key && value) children.push(key+"@"+value);
-				});
-			}
-			if (packageInfo.optionalDependencies) {
-				Object.keys(packageInfo.optionalDependencies).forEach(function(key){
-					var value = packageInfo.optionalDependencies[key];
-					if (key && value) children.push(key+"@"+value);
-				});
-			}
+			var children = getPackageDependencies(packageInfo);
 			// if (packageInfo.devDependencies) {
 			// 	Object.keys(packageInfo.devDependencies).forEach(function(key){
 			// 		var value = packageInfo.devDependencies[key];
@@ -254,6 +260,16 @@
 						rack();
 					}
 					return done("Package has no name");
+				});
+			}
+			else if (packageType==="local") {
+				var jsonPath = path.resolve(source, "package.json");
+				if (!target) setTarget(path.basename(path.resolve(source)));
+				readJson(jsonPath, function (err, localPackageInfo) {
+					if (err) return done(err);
+					if (!localPackageInfo) return done("Cannot read \""+jsonPath+"\".");
+					sources = sources.concat(getPackageDependencies(localPackageInfo));
+					next();
 				});
 			}
 			else {

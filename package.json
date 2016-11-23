@@ -59,7 +59,8 @@
 	  "npm-package-arg": "4.2.0",
 	  "tar.gz": "1.0.2",
 	  "rimraf": "2.5.2",
-	  "npm": "3.10.3"
+	  "npm": "3.10.3",
+	  "read-package-json": "2.0.4"
   },
   "devDependencies": {},
   "optionalDependencies": {}
