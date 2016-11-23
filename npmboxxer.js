@@ -353,7 +353,7 @@
 			// package have other bugs that prevent extraction from
 			// working at all. What we do here is keep `readdir`ing
 			// until the contents of the directory settle.
-			var dirCount = 0;
+			var dirCount = -1;
 			var doScan = function() {
 				fs.readdir(cache,function(err,files){
 					if (err) return done(err);
