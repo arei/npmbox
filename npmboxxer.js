@@ -180,8 +180,8 @@
 			var packageDetails = npa(packageName);
 			var packageType = packageDetails && packageDetails.type || null;
 
-			if(packageType==="git" || packageType==="hosted") {
-				npm.commands.cache.add(packageName,null,null,false,function(err, packageInfo) {
+			if(packageType==="git" || packageType==="hosted" || packageType==="local") {
+				npm.commands.cache.add(packageName,null,null,false,function(err,packageInfo) {
 					if (err) return callback(err);
 					lookupPackageDependencies(packageInfo);
 
@@ -297,9 +297,10 @@
 				return done(e);
 			}
 
-			if (packageType==="git" || packageType==="hosted") {
-				console.log("  Cloning "+source);
-				npm.commands.cache.add(source,null,null,false,function(err, packageInfo) {
+			if (packageType==="git" || packageType==="hosted" || packageType==="local") {
+				var doingWhat = (packageType==="local") ? "Copying" : "Cloning";
+				console.log("  "+doingWhat+" "+source);
+				npm.commands.cache.add(source,null,null,false,function(err,packageInfo) {
 					if (err) return done(err);
 					if (packageInfo && packageInfo.name) {
 						if (!target) setTarget(packageInfo.name);
