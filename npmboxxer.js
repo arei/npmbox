@@ -18,6 +18,19 @@
 	var work = path.resolve(cwd,".npmbox.work");
 	var cache = path.resolve(cwd,".npmbox.cache");
 
+	// This takes an install target (typically a simple package name, but sometimes a path or a general URL) and
+	// converts it into a form that is suitable as a simple filesystem component (name without slashes), including a
+	// `.npmbox` suffix.
+	var encodeTarget = function(target) {
+		return encodeURIComponent(target)+".npmbox";
+	}
+
+	// This reverses the action of `encodeTarget()`, and also strips away the directory prefix.
+	var decodeTarget = function(encoded) {
+		encoded = path.basename(encoded).replace(/\.npmbox$/,"");
+		return decodeURIComponent(encoded);
+	}
+
 	var cleanCache = function(callback) {
 		process.chdir(cwd);
 
@@ -129,7 +142,7 @@
 			var packageType = packageDetails && packageDetails.type || null;
 
 			if(packageType==="git" || packageType==="hosted") {
-				npm.commands.cache.add(packageName,null,null,false,function(err, packageInfo) {
+				npm.commands.cache.add(packageName,null,null,false,function(err,packageInfo) {
 					if (err) return callback(err);
 					lookupPackageDependencies(packageInfo);
 
@@ -220,7 +233,7 @@
 		};
 
 		var rack = function() {
-			var flagfile = path.resolve(cache,source+".npmbox");
+			var flagfile = path.resolve(cache,encodeTarget(source));
 			fs.writeFileSync(flagfile,source);
 
 			npmDependencies(source,options,function(err,deps){
@@ -247,13 +260,15 @@
 
 			if (packageType==="git" || packageType==="hosted") {
 				console.log("  Cloning "+source);
-				npm.commands.cache.add(source,null,null,false,function(err, packageInfo) {
+				npm.commands.cache.add(source,null,null,false,function(err,packageInfo) {
 					if (err) return done(err);
 					if (packageInfo && packageInfo.name) {
 						if (!target) setTarget(packageInfo.name);
 						rack();
 					}
-					return done("Package has no name");
+					else {
+						return done("Package has no name");
+					}
 				});
 			}
 			else {
@@ -331,12 +346,10 @@
 		var install = function() {
 			if (!options.silent) console.log("  Installing "+target+"...");
 
-			var packageName = path.basename(target);
-
-			npmInstall(packageName,function(err){
+			npmInstall(target,function(err){
 				if (err) {
-					if (!options.silent) console.log("An error occurred while installing "+packageName+".");
-					if (!options.silent) console.log(packageName+" was not installed.");
+					if (!options.silent) console.log("An error occurred while installing "+target+".");
+					if (!options.silent) console.log(target+" was not installed.");
 					if (options.verbose) console.log(err);
 					return done();
 				}
@@ -347,39 +360,32 @@
 		var getTargets = function() {
 			targets = {};
 
-			// Unfortunately, the `tar.gz` package at v1.0.2 will
-			// sometimes make its callback before it's done
-			// extracting all the files, but _later_ versions of the
-			// package have other bugs that prevent extraction from
-			// working at all. What we do here is keep `readdir`ing
-			// until the contents of the directory settle.
+			// Unfortunately, the `tar.gz` package at v1.0.2 will sometimes make its callback before it's done
+			// extracting all the files, but _later_ versions of the package have other bugs that prevent extraction
+			// from working at all. What we do here is keep `readdir`ing until the contents of the directory settle.
 			var dirCount = -1;
 			var doScan = function() {
 				fs.readdir(cache,function(err,files){
 					if (err) return done(err);
 
 					if (files.length !== dirCount) {
-						// Wait a moment to see if more
-						// files get extracted. See
-						// comment above.
+						// Wait a moment to see if more files get extracted. See comment above.
 						dirCount = files.length;
-						setTimeout(doScan, 250);
+						setTimeout(doScan,250);
 						return;
 					}
 
 					files.filter(function(file){
 						return file.match(/\.npmbox$/);
 					}).forEach(function(file){
-						file = path.basename(file).replace(/\.npmbox$/,"");
-						targets[file] = true;
+						targets[decodeTarget(file)] = true;
 					});
 
 					targets = Object.keys(targets);
 					if (targets.length === 0) {
-						// This is a legacy `.npmbox` file which instead of having embedded flag
-						// files just uses the name of the archive file to determine what to
-						// install.
-						targets = [path.basename(source).replace(/\.npmbox$/,"")];
+						// This is a legacy `.npmbox` file which instead of having embedded flag files just uses the name of the archive file to determine what
+						// to install.
+						targets = [decodeTarget(source)];
 					}
 					next();
 				});
