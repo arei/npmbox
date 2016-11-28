@@ -290,7 +290,9 @@
 						if (!target) setTarget(packageInfo.name);
 						rack();
 					}
-					return done("Package has no name");
+					else {
+						return done("Package has no name");
+					}
 				});
 			}
 			else {
