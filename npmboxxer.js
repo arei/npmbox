@@ -8,6 +8,7 @@
 (function(){
 	var npm = require("npm");
 	var fs = require("fs");
+	var fsx = require("fs-extra");
 	var path = require("path");
 	var targz = require("tar.gz");
 	var rimraf = require("rimraf");
@@ -52,7 +53,44 @@
 	};
 
 	var tarExtract = function(source,target,callback) {
-		new targz().extract(source,target,callback);
+		// Unfortunately, the `tar.gz` package at v1.0.2 will sometimes make its
+		// callback before it's done extracting all the files, but _later_
+		// versions of the package have other bugs that prevent extraction from
+		// working at all. What we do here is keep checking the contents of the
+		// directory (recursive walk) until they settle.
+
+		var prevSize = -1; // Total size we found on the most recent iteration.
+
+		var checkIfDone = function(err) {
+			if (err) return callback(err);
+
+			var totalSize = 0; // Total size of all files in the cache.
+			fsx.walk(cache)
+				.on("readable",function(){
+					for (;;) {
+						var item = this.read();
+						if (!item) break;
+						totalSize += item.stats.isFile() ? item.stats.size : 1;
+					}
+				})
+				.on("end",function(){
+					if (totalSize === prevSize) {
+						// Contents have not changed in size since the previous
+						// iteration. Done!
+						callback();
+					} else {
+						// Contents have changed. Note the new size, delay a
+						// moment, and then check again.
+						prevSize = totalSize;
+						setTimeout(checkIfDone,250);
+					}
+				})
+				.on("error",function(err){
+					return callback(err);
+				});
+		};
+
+		new targz().extract(source,target,checkIfDone);
 	};
 
 	var npmInit = function(options,callback) {
@@ -347,45 +385,24 @@
 		var getTargets = function() {
 			targets = {};
 
-			// Unfortunately, the `tar.gz` package at v1.0.2 will
-			// sometimes make its callback before it's done
-			// extracting all the files, but _later_ versions of the
-			// package have other bugs that prevent extraction from
-			// working at all. What we do here is keep `readdir`ing
-			// until the contents of the directory settle.
-			var dirCount = -1;
-			var doScan = function() {
-				fs.readdir(cache,function(err,files){
-					if (err) return done(err);
+			fs.readdir(cache,function(err,files){
+				if (err) return done(err);
 
-					if (files.length !== dirCount) {
-						// Wait a moment to see if more
-						// files get extracted. See
-						// comment above.
-						dirCount = files.length;
-						setTimeout(doScan, 250);
-						return;
-					}
-
-					files.filter(function(file){
-						return file.match(/\.npmbox$/);
-					}).forEach(function(file){
-						file = path.basename(file).replace(/\.npmbox$/,"");
-						targets[file] = true;
-					});
-
-					targets = Object.keys(targets);
-					if (targets.length === 0) {
-						// This is a legacy `.npmbox` file which instead of having embedded flag
-						// files just uses the name of the archive file to determine what to
-						// install.
-						targets = [path.basename(source).replace(/\.npmbox$/,"")];
-					}
-					next();
+				files.filter(function(file){
+					return file.match(/\.npmbox$/);
+				}).forEach(function(file){
+					file = path.basename(file).replace(/\.npmbox$/,"");
+					targets[file] = true;
 				});
-			};
 
-			doScan();
+				targets = Object.keys(targets);
+				if (targets.length === 0) {
+					// This is a legacy `.npmbox` file which instead of having embedded flag files just uses the name of
+					// the archive file to determine what to install.
+					targets = [path.basename(source).replace(/\.npmbox$/,"")];
+				}
+				next();
+			});
 		};
 
 		var unpack = function() {
