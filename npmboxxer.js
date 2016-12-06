@@ -11,7 +11,6 @@
 	var fsx = require("fs-extra");
 	var path = require("path");
 	var targz = require("tar.gz");
-	var rimraf = require("rimraf");
 	var is = require("is");
 	var npa = require("npm-package-arg");
 
@@ -29,14 +28,14 @@
 			else callback();
 		};
 
-		if (fs.existsSync(cache)) rimraf(cache,wait);
+		if (fs.existsSync(cache)) fsx.remove(cache,wait);
 		else callback();
 	};
 
 	var cleanWork = function(callback) {
 		process.chdir(cwd);
 
-		if (fs.existsSync(work)) rimraf(work,callback);
+		if (fs.existsSync(work)) fsx.remove(work,callback);
 		else callback();
 	};
 
