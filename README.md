@@ -12,6 +12,11 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## npmbox news
 
+UPDATE December 20, 2016: v4.0.2 of npmbox is out.
+  * Fix a couple issues which could cause npmbox to incorrectly try to use the
+    network.
+  * Support for top-level install targets that aren't simple npm package names.
+
 UPDATE August 9, 2016: v4.0.0 of npmbox is out.
   * Support for bundling multiple packages into a single .npmbox file! (Hooray!)
   * Roll back version of tar.gz lib to solve large tar file bug.
