@@ -22,7 +22,7 @@ UPDATE August 9, 2016: v4.0.0 of npmbox is out.
   * Roll back version of tar.gz lib to solve large tar file bug.
   * Fix error where npmbox would not give an error on a failure.
 
-Also worthy of note is that npm, inc. has begun thinking and working in how to do this within npm itself (and hopefully obsoletting this project entirely).  There's a good blog post over at npm, inc called "dealing with problematic dependencies in a restricted network environment" that details some of the problems: [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
+Also worthy of note is that npm, inc. has begun thinking and working in how to do this within npm itself (and hopefully obsoleting this project entirely).  There's a good blog post over at npm, inc called "dealing with problematic dependencies in a restricted network environment" that details some of the problems: [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
 
 ## Usage of `npmbox`
 
@@ -98,7 +98,7 @@ A particular use case with npmunbox comes up fairly often: **how do I use npmbox
 
     npmbox npmbox
 
-3). Copy the resulting `npmbox.npmbox` file to you offline system in whatever manner allowed to you,  This could involve coping to movable media and transfering that way, however you would do it.
+3). Copy the resulting `npmbox.npmbox` file to you offline system in whatever manner allowed to you,  This could involve coping to movable media and transferring that way, however you would do it.
 
 **On the system you want to install npmbox to, do the following:**
 
@@ -130,7 +130,7 @@ NOTE: On windows you might not have the tar command.  You can use another zip ut
 
 5). Install npmbox globally using the following command.
 
-For unix or max...
+For unix or macs...
 
     npm install --global --cache ./.npmbox.cache --optional --cache-min 99999999999 --shrinkwrap false npmbox
 
@@ -160,7 +160,7 @@ Sorry, I am only one person and I already have a full time job.  Using open sour
 
 99% of the time this occurs is because the npmbox didn't get some resource that npmunbox is looking for and cannot find in the npmbox file. This happens.  There are TONS of edge cases that npmbox misses.  Two worth nothing:
   * Some packages reference git repos instead of npm packages.  This has been fixed as of version 3.0 of npmbox.  Very exciting.
-  * Packages that execute external scripts that call out to git repos or npm are entirely outside of the controll of npmbox.  Not much we can do about that.
+  * Packages that execute external scripts that call out to git repos or npm are entirely outside of the control of npmbox.  Not much we can do about that.
 
 3). When I run the command described above to install npmbox on my offline machine I get an error.
 
@@ -176,4 +176,4 @@ In order to support multiple npm packages in a single .npmbox file we had to cha
 
 6). But I wanted it to work the old way with one .npmbox file per package.
 
-Sorry.  The multiple packages per single file change is a big deal.  It lets you create a single .npmbox with multiple packages but without redundent libraries being include multiple times.  So nice. Multiple packages in a single .npmbox file also lets you unbox a single .npmbox file and get multiple installs.
+Sorry.  The multiple packages per single file change is a big deal.  It lets you create a single .npmbox with multiple packages but without redundant libraries being include multiple times.  So nice. Multiple packages in a single .npmbox file also lets you unbox a single .npmbox file and get multiple installs.
