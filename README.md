@@ -79,63 +79,41 @@ You may specify more than one file, and each will be installed.
 
 ## Using `npmunbox` without npmbox being installed
 
-A particular use case with npmunbox comes up fairly often: **how do I use npmbox without first installing npmbox**.  Specifically, many people have asked for a way to run npmunbox as a means to installing npmbox.  You can see that this is a bit of a chicken and egg problem.  How do we install npmbox from an npmbox file?
+A particular use case with npmunbox comes up fairly often: **how do I use npmbox without first installing npmbox**.  Specifically, many people have asked for a way to run npmunbox as a means to installing npmbox.  You can see that this is a bit of a chicken and egg problem.
 
-### Installing npmbox from an .npmbox file
+To solve this problem, you may pre-pack npmbox as an offline tarball and utilize npm's built-in "npm pack" functionality leveraging package.json's "bundleDependencies" list.
 
-**On a system that does have access to the Internet, you need to do the following:**
+### Building Offline Tarball
 
-1). If npmbox is not globally installed on your online system, do so now:
+1). On a build system/box with internet access, execute the following, from within the npmbox repo.
 
-	npm install -g npmbox
+    ./build-offline-tarball.sh
 
-2). In a folder in which you can read/write:
+If everything goes well, you should end up with build output such as the following. Look specifically for the [SUCCESS] build test result.
 
-	npmbox npmbox
+    ./build-offline-tarball.sh 
+    npm http GET https://registry.npmjs.org/npmbox
+    npm http 304 https://registry.npmjs.org/npmbox
+    npmbox@2.7.0 node_modules/npmbox
+    npmbox-2.7.0.tgz
+    Description:	Ubuntu 14.04.3 LTS
+    Rules updated
+    Rules updated (v6)
+    Rules updated
+    Rules updated (v6)
+    Command may disrupt existing ssh connections. Proceed with operation (y|n)? Firewall is active and enabled on system startup
+    /usr/local/bin/npmbox -> /usr/local/lib/node_modules/npmbox/bin/npmbox
+    /usr/local/bin/npmunbox -> /usr/local/lib/node_modules/npmbox/bin/npmunbox
+    npmbox@2.7.0 /usr/local/lib/node_modules/npmbox
+    /usr/local/bin/npmbox
+    [SUCCESS] Npmbox established without internet access.
+    Firewall stopped and disabled on system startup
 
-3). Copy the resulting `npmbox.npmbox` file to you offline system in whatever manner allowed to you,  This could involve coping to movable media and transfering that way, however you would do it.
+2). From within the box without internet access, copy the resulting npmbox*.tgz file somewhere from the build box and execute the following command against it:
 
-**On the system you want to install npmbox to, do the following:**
+    npm install -g npmbox-[npmbox_version].tgz
 
-1). Create a new directory
-
-	mkdir somedir
-
-2). Change to it:
-
-	cd somedir
-
-3). Copy the npmbox.npmbox folder into this directory.
-
-	cp /media/usb/npmbox.npmbox .
-
-or
-
-	copy E:\npmbox.npmbox .
-
-4). Untar the .npmbox file.  This will create the .npmbox.cache folder.
-
-	tar --no-same-owner --no-same-permissions -xvzf npmbox.npmbox
-
-NOTE: If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
-
-NOTE: On some OSes it may also be necessary to drop the ```-z``` switch from the tar command as well.
-
-NOTE: On windows you might not have the tar command.  You can use another zip utility (like 7-zip or winzip) to extract the file if you like.  Just please note that the file is a .tar.gz file and thus you may need to extract it twice, once for the zip, the second for the tar.  **If you do this, please make sure to remove the tar file from your local directory before running the npm command below.**
-
-5). Install npmbox globally using the following command.
-
-For unix or max...
-
-	npm install --global --cache ./.npmbox.cache --optional --cache-min 99999 --shrinkwrap false npmbox
-
-For windows...
-
-	npm install --global --cache .\.npmbox.cache --optional --cache-min 99999 --shrinkwrap false npmbox
-
-NOTE: If you have a file called ```npmbox``` (no extension) in the local directory, this will not work correctly.  Please remove said ```npmbox``` file.
-
-6). Once npmbox is installed globally you can use it to install other .npmbox files:
+3). Once npmbox is installed globally you can use it to install other .npmbox files:
 
 	npmunbox blah
 
