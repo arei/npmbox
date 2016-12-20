@@ -306,7 +306,7 @@
 				npm.commands.cache.add(source,null,null,false,function(err,packageInfo) {
 					if (err) return done(err);
 					if (packageInfo && packageInfo.name && packageInfo.version) {
-						if (!target) setTarget(packageInfo.name);
+						if (!target) setTarget(path.basename(packageInfo.name));
 						// Because we just want to take the package from the cache when unboxing, instead of referring
 						// to the original `source` (which might be a local path or network reference), we instead
 						// rewrite it in a form that gets explicitly recognized while unboxing.
