@@ -54,12 +54,12 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
-	  "is": "3.1.0",
-	  "optimist": "0.6.1",
-	  "npm-package-arg": "4.2.0",
-	  "tar.gz": "1.0.2",
-	  "rimraf": "2.5.2",
-	  "npm": "3.10.3"
+    "fs-extra": "1.0.0",
+    "is": "3.1.0",
+    "optimist": "0.6.1",
+    "npm-package-arg": "4.2.0",
+    "tar.gz": "1.0.2",
+    "npm": "3.10.3"
   },
   "devDependencies": {},
   "optionalDependencies": {}

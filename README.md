@@ -167,7 +167,7 @@ npm, inc. is actively working on this problem as we speak.  Read this blog post 
 
 5). I used to be able to create multiple .npmbox files with a single command. Why did that change.
 
-In order to support multiple npm packages in a single .npmbox file we had to change how this works.  It's still possible to create multiple .npmbox per package, but you will just need to runt he command multiple times.
+In order to support multiple npm packages in a single .npmbox file we had to change how this works.  It's still possible to create multiple .npmbox per package, but you will just need to run the command multiple times.
 
 6). But I wanted it to work the old way with one .npmbox file per package.
 
