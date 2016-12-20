@@ -170,7 +170,7 @@ This if frequently caused by incorrectly referencing where the ```.npmbox-cache`
 
 npm, inc. is actively working on this problem as we speak.  Read this blog post for some of the challenges they are facing:  [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
 
-5). I used to be able to create multiple .npmbox files with a single command. Why did that change.
+5). I used to be able to create multiple .npmbox files with a single command. Why did that change?
 
 In order to support multiple npm packages in a single .npmbox file we had to change how this works.  It's still possible to create multiple .npmbox per package, but you will just need to run the command multiple times.
 
