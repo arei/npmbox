@@ -23,18 +23,18 @@ Also worthy of note is that npm, inc. has begun thinking and working in how to d
 
 Given some package, like `express` this command will create a archive file of that package and all of its dependencies, such that a npmunbox of that archive file will install express and all of its dependencies.
 
-	npmbox - Create an archive for offline installation of the given package.
+    npmbox - Create an archive for offline installation of the given package.
 
-	Usage:
+    Usage:
 
-  		npmbox --help
-  		npmbox [options] <package> <package>...
+          npmbox --help
+          npmbox [options] <package> <package>...
 
-	Options:
+    Options:
 
-		-v, --verbose         Shows npm output which is normally hidden.
-		-s, --silent          Shows no output whatsoever.
-		-t, --target          Specify the .npmbox file to write.
+        -v, --verbose         Shows npm output which is normally hidden.
+        -s, --silent          Shows no output whatsoever.
+        -t, --target          Specify the .npmbox file to write.
 
 You must specify at least one package.
 
@@ -50,25 +50,25 @@ NOTE: When creating an archive file for a package destined to be installed on an
 
 Given some .npmbox file (must end with the .npmbox extension), installs the contents and all of it dependencies.
 
-	npmunbox - Extracts a .npmbox file and installs the contained package.
+    npmunbox - Extracts a .npmbox file and installs the contained package.
 
-	Usage:
+    Usage:
 
-		npmunbox --help
-		npmunbox [options] <nmpbox-file> <npmbox-file>...
+        npmunbox --help
+        npmunbox [options] <nmpbox-file> <npmbox-file>...
 
-	Options:
+    Options:
 
-		-v, --verbose         Shows npm output which is normally hidden.
-		-s, --silent          Shows additional output which is normally hidden.
-		-p, --path            Specify the path to a folder from which the .npmbox file(s) will be read.
-		-g, --global          Installs package globally as if --global was passed to npm.
-		-C, --prefix          npm --prefix switch.
-		-S, --save            npm --save switch.
-		-D, --save-dev        npm --save-dev switch.
-		-O, --save-optional   npm --save-optional switch.
-		-B, --save-bundle     npm --save-bundle switch.
-		-E, --save-exact      npm --save-exact switch.
+        -v, --verbose         Shows npm output which is normally hidden.
+        -s, --silent          Shows additional output which is normally hidden.
+        -p, --path            Specify the path to a folder from which the .npmbox file(s) will be read.
+        -g, --global          Installs package globally as if --global was passed to npm.
+        -C, --prefix          npm --prefix switch.
+        -S, --save            npm --save switch.
+        -D, --save-dev        npm --save-dev switch.
+        -O, --save-optional   npm --save-optional switch.
+        -B, --save-bundle     npm --save-bundle switch.
+        -E, --save-exact      npm --save-exact switch.
 
 
 You must specify at least one file.
@@ -87,11 +87,11 @@ A particular use case with npmunbox comes up fairly often: **how do I use npmbox
 
 1). If npmbox is not globally installed on your online system, do so now:
 
-	npm install -g npmbox
+    npm install -g npmbox
 
 2). In a folder in which you can read/write:
 
-	npmbox npmbox
+    npmbox npmbox
 
 3). Copy the resulting `npmbox.npmbox` file to you offline system in whatever manner allowed to you,  This could involve coping to movable media and transfering that way, however you would do it.
 
@@ -99,23 +99,23 @@ A particular use case with npmunbox comes up fairly often: **how do I use npmbox
 
 1). Create a new directory
 
-	mkdir somedir
+    mkdir somedir
 
 2). Change to it:
 
-	cd somedir
+    cd somedir
 
 3). Copy the npmbox.npmbox folder into this directory.
 
-	cp /media/usb/npmbox.npmbox .
+    cp /media/usb/npmbox.npmbox .
 
 or
 
-	copy E:\npmbox.npmbox .
+    copy E:\npmbox.npmbox .
 
 4). Untar the .npmbox file.  This will create the .npmbox.cache folder.
 
-	tar --no-same-owner --no-same-permissions -xvzf npmbox.npmbox
+    tar --no-same-owner --no-same-permissions -xvzf npmbox.npmbox
 
 NOTE: If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
 
@@ -127,17 +127,17 @@ NOTE: On windows you might not have the tar command.  You can use another zip ut
 
 For unix or max...
 
-	npm install --global --cache ./.npmbox.cache --optional --cache-min 99999 --shrinkwrap false npmbox
+    npm install --global --cache ./.npmbox.cache --optional --cache-min 99999999999 --shrinkwrap false npmbox
 
 For windows...
 
-	npm install --global --cache .\.npmbox.cache --optional --cache-min 99999 --shrinkwrap false npmbox
+    npm install --global --cache .\.npmbox.cache --optional --cache-min 99999999999 --shrinkwrap false npmbox
 
 NOTE: If you have a file called ```npmbox``` (no extension) in the local directory, this will not work correctly.  Please remove said ```npmbox``` file.
 
 6). Once npmbox is installed globally you can use it to install other .npmbox files:
 
-	npmunbox blah
+    npmunbox blah
 
 NOTE: If you are running into issues where npmunbox is still trying to reach out to the internet it may help to try clearing your npm cache on the machine
 
