@@ -302,7 +302,7 @@
 				npm.commands.cache.add(source,null,null,false,function(err, packageInfo) {
 					if (err) return done(err);
 					if (packageInfo && packageInfo.name) {
-						if (!target) setTarget(packageInfo.name);
+						if (!target) setTarget(path.basename(packageInfo.name));
 						rack();
 					}
 					else {
@@ -311,7 +311,7 @@
 				});
 			}
 			else {
-				if (!target) setTarget(source);
+				if (!target) setTarget(path.basename(npa(source).name));
 				rack();
 			}
 		};
