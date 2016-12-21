@@ -1,6 +1,6 @@
 {
   "name": "npmbox",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "dependencies": {
     "assertion-error": {
       "version": "1.0.2",
