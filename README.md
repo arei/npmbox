@@ -52,7 +52,7 @@ an argument to `npm install`, and can also be a local path to a `.json` file,
 assumed to be in `package.json` format; in this case, the dependencies listed
 in the file are included in the box (except for `devDependencies`).
 
-*NEW*: You can specify more than one package and all packages will be bundled into a single archive.
+All specified packages get bundled into a single archive.
 
 npmbox files end with the .npmbox extension.
 
