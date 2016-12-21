@@ -47,7 +47,7 @@ You must specify at least one package.
 
 npmbox files end with the .npmbox extension.
 
-NOTE: When creating an archive file for a package destined to be installed on an offline machine clear your npm cache before using npmbox
+NOTE: When creating an archive file for a package destined to be installed on an offline machine clear your npm cache before using npmbox.
 
     npm cache clean
 
@@ -102,7 +102,7 @@ A particular use case with npmunbox comes up fairly often: **how do I use npmbox
 
 **On the system you want to install npmbox to, do the following:**
 
-1). Create a new directory
+1). Create a new directory:
 
     mkdir somedir
 
@@ -110,7 +110,7 @@ A particular use case with npmunbox comes up fairly often: **how do I use npmbox
 
     cd somedir
 
-3). Copy the npmbox.npmbox folder into this directory.
+3). Copy the npmbox.npmbox folder into this directory:
 
     cp /media/usb/npmbox.npmbox .
 
