@@ -353,10 +353,6 @@
 		if (target) setTarget(target);
 
 		var sources = source && source instanceof Array && source || source && [source] || [];
-		source = source.filter(function(source){
-			return !!source;
-		});
-		source = null;
 
 		init();
 	};
