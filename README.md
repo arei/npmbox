@@ -34,7 +34,7 @@ Also worthy of note is that npm, inc. has begun thinking and working in how to d
 
 Given some package, like `express` this command will create a archive file of that package and all of its dependencies, such that a npmunbox of that archive file will install express and all of its dependencies.
 
-    npmbox - Create an archive for offline installation of the given package.
+    npmbox - Create an archive for offline installation of one or more packages.
 
     Usage:
 
@@ -47,7 +47,10 @@ Given some package, like `express` this command will create a archive file of th
         -s, --silent          Shows no output whatsoever.
         -t, --target          Specify the .npmbox file to write.
 
-You must specify at least one package.
+You must specify at least one package. Packages can be anything accepted as
+an argument to `npm install`, and can also be a local path to a `.json` file,
+assumed to be in `package.json` format; in this case, the dependencies listed
+in the file are included in the box (except for `devDependencies`).
 
 *NEW*: You can specify more than one package and all packages will be bundled into a single archive.
 
