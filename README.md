@@ -12,6 +12,12 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## npmbox news
 
+UPDATE December 21, 2016: v4.1.0 of npmbox is out.
+  * Support for running npmbox on a top-level local package, e.g.
+    `npmbox path/to/my/package`. **Note:** You cannot be `cd`ed to the directory
+    to box. (That is, `npmbox .` won't work.) This may be addressed in a future
+    version.
+
 UPDATE December 20, 2016: v4.0.2 of npmbox is out.
   * Fix a couple issues which could cause npmbox to incorrectly try to use the
     network.
@@ -47,7 +53,7 @@ You must specify at least one package.
 
 npmbox files end with the .npmbox extension.
 
-NOTE: When creating an archive file for a package destined to be installed on an offline machine clear your npm cache before using npmbox
+NOTE: When creating an archive file for a package destined to be installed on an offline machine clear your npm cache before using npmbox.
 
     npm cache clean
 
@@ -102,7 +108,7 @@ A particular use case with npmunbox comes up fairly often: **how do I use npmbox
 
 **On the system you want to install npmbox to, do the following:**
 
-1). Create a new directory
+1). Create a new directory:
 
     mkdir somedir
 
@@ -110,7 +116,7 @@ A particular use case with npmunbox comes up fairly often: **how do I use npmbox
 
     cd somedir
 
-3). Copy the npmbox.npmbox folder into this directory.
+3). Copy the npmbox.npmbox folder into this directory:
 
     cp /media/usb/npmbox.npmbox .
 
@@ -122,9 +128,9 @@ or
 
     tar --no-same-owner --no-same-permissions -xvzf npmbox.npmbox
 
-NOTE: If for some reason ```--no-same-owner``` or ```--no-same-permissions``` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
+NOTE: If for some reason `--no-same-owner` or `--no-same-permissions` do not work, remove them and adjust the permissions/ownership yourself.  You will need to ensure that npm can see all the files in the .npmbox.cache file structure.
 
-NOTE: On some OSes it may also be necessary to drop the ```-z``` switch from the tar command as well.
+NOTE: On some OSes it may also be necessary to drop the `-z` switch from the tar command as well.
 
 NOTE: On windows you might not have the tar command.  You can use another zip utility (like 7-zip or winzip) to extract the file if you like.  Just please note that the file is a .tar.gz file and thus you may need to extract it twice, once for the zip, the second for the tar.  **If you do this, please make sure to remove the tar file from your local directory before running the npm command below.**
 
@@ -138,7 +144,7 @@ For windows...
 
     npm install --global --cache .\.npmbox.cache --optional --cache-min 99999999999 --shrinkwrap false npmbox
 
-NOTE: If you have a file called ```npmbox``` (no extension) in the local directory, this will not work correctly.  Please remove said ```npmbox``` file.
+NOTE: If you have a file called `npmbox` (no extension) in the local directory, this will not work correctly.  Please remove said `npmbox` file.
 
 6). Once npmbox is installed globally you can use it to install other .npmbox files:
 
@@ -164,7 +170,7 @@ Sorry, I am only one person and I already have a full time job.  Using open sour
 
 3). When I run the command described above to install npmbox on my offline machine I get an error.
 
-This if frequently caused by incorrectly referencing where the ```.npmbox-cache``` file is.  Please check the section of the command ```---cache .\.npmbox-cache``` and make sure it is pointing at the correct location.
+This if frequently caused by incorrectly referencing where the `.npmbox-cache` file is.  Please check the section of the command `--cache .\.npmbox-cache` and make sure it is pointing at the correct location.
 
 4). When is npm going to add this functionality?
 

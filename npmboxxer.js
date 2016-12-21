@@ -180,8 +180,8 @@
 			var packageDetails = npa(packageName);
 			var packageType = packageDetails && packageDetails.type || null;
 
-			if(packageType==="git" || packageType==="hosted") {
-				npm.commands.cache.add(packageName,null,null,false,function(err, packageInfo) {
+			if(packageType==="git" || packageType==="hosted" || packageType==="local") {
+				npm.commands.cache.add(packageName,null,null,false,function(err,packageInfo) {
 					if (err) return callback(err);
 					lookupPackageDependencies(packageInfo);
 
@@ -271,9 +271,12 @@
 			});
 		};
 
-		var rack = function() {
-			var flagfile = path.resolve(cache,encodeTarget(source));
-			fs.writeFileSync(flagfile,source);
+		var rack = function(packageName) {
+			// **Note:** The given `packageName` is the same as the `source` for regular packages (that come from the
+			// registry), but in other cases (hosted, git, local) the name is instead constructed to refer to the
+			// package by its name and version as stored in the cache.
+			var flagfile = path.resolve(cache,encodeTarget(packageName));
+			fs.writeFileSync(flagfile,packageName);
 
 			npmDependencies(source,options,function(err,deps){
 				if (err) return done(err);
@@ -297,22 +300,26 @@
 				return done(e);
 			}
 
-			if (packageType==="git" || packageType==="hosted") {
-				console.log("  Cloning "+source);
-				npm.commands.cache.add(source,null,null,false,function(err, packageInfo) {
+			if (packageType==="git" || packageType==="hosted" || packageType==="local") {
+				var doingWhat = (packageType==="local") ? "Copying" : "Cloning";
+				console.log("  "+doingWhat+" "+source);
+				npm.commands.cache.add(source,null,null,false,function(err,packageInfo) {
 					if (err) return done(err);
-					if (packageInfo && packageInfo.name) {
+					if (packageInfo && packageInfo.name && packageInfo.version) {
 						if (!target) setTarget(path.basename(packageInfo.name));
-						rack();
+						// Because we just want to take the package from the cache when unboxing, instead of referring
+						// to the original `source` (which might be a local path or network reference), we instead
+						// rewrite it in a form that gets explicitly recognized while unboxing.
+						rack("file:"+packageInfo.name+"-"+packageInfo.version+".tgz");
 					}
 					else {
-						return done("Package has no name");
+						return done("Package has no name or no version");
 					}
 				});
 			}
 			else {
-				if (!target) setTarget(path.basename(npa(source).name));
-				rack();
+				if (!target) setTarget(source);
+				rack(source);
 			}
 		};
 
@@ -384,6 +391,20 @@
 
 		var install = function() {
 			if (!options.silent) console.log("  Installing "+target+"...");
+
+			if (target.match(/^file:/)) {
+				// This is a target that was originally included via a local path or network-based name (URL, git ID).
+				// Move the cached package out of the cache before installing, because otherwise `npm` will have trouble
+				// figuring out what to do. (It doesn't like being asked to install from cache paths.)
+				var parts = target.match(/^file:((.+)-(.+)\.tgz)$/);
+				var fullName = parts[1];
+				var name = parts[2];
+				var version = parts[3];
+				target = path.resolve(work,fullName);
+				fs.mkdirSync(work); // We only create the `work` directory when needed.
+				fs.renameSync(path.resolve(cache,name,version,"package.tgz"),target);
+				target = "file:"+target;
+			}
 
 			npmInstall(target,function(err){
 				if (err) {
