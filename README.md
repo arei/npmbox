@@ -12,6 +12,12 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## npmbox news
 
+UPDATE December 21, 2016: v4.1.0 of npmbox is out.
+  * Support for running npmbox on a top-level local package, e.g.
+    `npmbox path/to/my/package`. **Note:** You cannot be `cd`ed to the directory
+    to box. (That is, `npmbox .` won't work.) This may be addressed in a future
+    version.
+
 UPDATE December 20, 2016: v4.0.2 of npmbox is out.
   * Fix a couple issues which could cause npmbox to incorrectly try to use the
     network.
