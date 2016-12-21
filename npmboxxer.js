@@ -10,6 +10,7 @@
 	var fs = require("fs");
 	var fsx = require("fs-extra");
 	var path = require("path");
+	var readJson = require("read-package-json");
 	var targz = require("tar.gz");
 	var is = require("is");
 	var npa = require("npm-package-arg");
@@ -61,6 +62,29 @@
 			});
 		});
 	};
+
+	// Given a key/value pair from a dependency map (e.g. in a `package.json`
+	// file), return the dependency name. In the case of an implied name in the
+	// value, that is, a usual package dependency (e.g. `"foo": "^1.2"`), this
+	// joins the key and value with an `@`. When the value is fully specified,
+	// this just returns the value.
+	var fixDependency = function(key,value) {
+		var parsed = npa(value); // We use npm's own mechanism to decide.
+		if (parsed.name===null) return key+"@"+value;
+		else return value;
+	}
+
+	// Given a dependency map (e.g. from a `package.json` file), return a list
+	// of the full dependency names. Returns an empty list if given `null`.
+	var listDependencies = function(depMap) {
+		var result = [];
+		var keys = Object.keys(depMap||{});
+		for (var i = 0; i<keys.length; i++) {
+			var k = keys[i];
+			result.push(fixDependency(k,depMap[k]));
+		}
+		return result;
+	}
 
 	var tarCreate = function(source,target,callback) {
 		new targz().compress(source,target,callback);
@@ -252,6 +276,18 @@
 			source = sources.shift();
 
 			if (!source) pack();
+			else if (source.match(/\.json$/)) {
+				// `source` names a JSON file, assumed to be in `package.json` format. Read it and extract its
+				// dependencies. Add them to the `sources`, and then keep on boxing.
+				readJson(source, console.log, function(err, obj){
+					if (err) return done(err);
+					sources = sources.concat(
+						listDependencies(obj.dependencies),
+						listDependencies(obj.optionalDependencies),
+						listDependencies(obj.bundledDependencies));
+					next();
+				});
+			}
 			else extractPackageName();
 		};
 
@@ -318,7 +354,7 @@
 				});
 			}
 			else {
-				if (!target) setTarget(source);
+				if (!target) setTarget(npa(source).name);
 				rack(source);
 			}
 		};
