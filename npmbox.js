@@ -1,7 +1,7 @@
 // npmbox by Glen R. Goodwin (@areinet)
 // https://github.com/arei/npmbox.git
 
-// Creates an archive "box" of an npm package and its dependencies.
+// Creates an archive "box" of one or more npm packages and their dependencies.
 
 "use strict";
 
@@ -50,7 +50,6 @@ sources = sources.filter(function(source){
 	return !!source;
 });
 if (sources && sources.length>0) {
-
 	if (!options.silent) console.log("\nBoxing "+sources.join(", ")+"...");
 	boxxer.box(sources,options,complete);
 }
