@@ -89,7 +89,7 @@ You must specify at least one file.
 
 You may specify more than one file, and each will be installed.
 
-*NEW*: If an .npmbox file contains multiple packages, unboxing the .npmbox will install ALL of those packages.
+If an .npmbox file contains multiple packages, unboxing the .npmbox will install ALL of those packages.
 
 ## Using `npmunbox` without npmbox being installed
 
