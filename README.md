@@ -164,7 +164,7 @@ Sorry, I am only one person and I already have a full time job.  Using open sour
 
 3). When I run the command described above to install npmbox on my offline machine I get an error.
 
-This if frequently caused by incorrectly referencing where the ```.npmbox-cache``` file is.  Please check the section of the command ```---cache .\.npmbox-cache``` and make sure it is pointing at the correct location.
+This if frequently caused by incorrectly referencing where the `.npmbox-cache` file is.  Please check the section of the command `--cache .\.npmbox-cache` and make sure it is pointing at the correct location.
 
 4). When is npm going to add this functionality?
 
