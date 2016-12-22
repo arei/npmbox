@@ -372,10 +372,8 @@
 		init();
 	};
 
-	var unbox = function(source,options,callback) {
-		var targets = [];
-		var target = null;
-
+	// This _just_ unpacks the indicated box into the working cache directory.
+	var unpack = function(source,options,callback) {
 		if (!fs.existsSync(source)) {
 			source = path.resolve(options.path,source+".npmbox");
 			if (!fs.existsSync(source)) {
@@ -384,6 +382,71 @@
 			}
 		}
 
+		if (!options.silent) console.log("  Unpacking "+source+"...");
+
+		// `dirname` to go up one layer because the top level of the box
+		// archive is `.npmbox.cache`.
+		tarExtract(source,path.dirname(cache),function(err){
+			if (err) {
+				var packageName = path.basename(target);
+				if (!options.silent) console.log("An error occurred while unpacking "+source+".");
+				if (!options.silent) console.log(source+" was not processed.");
+				if (options.verbose) console.log(err);
+				return callback(err);
+			}
+			callback();
+		});
+	};
+
+	// Initialize npm for unboxing operations.
+	var npmInitForUnbox = function(options,callback){
+		options.cache = cache;
+		options.loglevel = options.verbose ? "verbose" : "silent";
+		options.progress = false;
+		options.color = false;
+		options["ignore-scripts"] = true;
+		options["cache-min"] = 1000 * 365.25 * 24 * 60 * 60; // a thousand years
+		options["fetch-retries"] = 0;
+		options["fetch-retry-factor"] = 0;
+		options["fetch-retry-mintimeout"] = 1;
+		options["fetch-retry-maxtimeout"] = 2;
+
+		npmInit(options,callback);
+	};
+
+	// This _just_ installs the given package, using whatever cache has been
+	// upacked.
+	var installPackage = function(target,options,callback) {
+		if (!options.silent) console.log("  Installing "+target+"...");
+
+		if (target.match(/^file:/)) {
+			// This is a target that was originally included via a local path or network-based name (URL, git ID).
+			// Move the cached package out of the cache before installing, because otherwise `npm` will have trouble
+			// figuring out what to do. (It doesn't like being asked to install from cache paths.)
+			var parts = target.match(/^file:((.+)-(.+)\.tgz)$/);
+			var fullName = parts[1];
+			var name = parts[2];
+			var version = parts[3];
+			target = path.resolve(work,fullName);
+			fs.renameSync(path.resolve(cache,name,version,"package.tgz"),target);
+			target = "file:"+target;
+		}
+
+		npmInstall(target,function(err){
+			if (err) {
+				if (!options.silent) console.log("An error occurred while installing "+target+".");
+				if (!options.silent) console.log(target+" was not installed.");
+				if (options.verbose) console.log(err);
+				return callback(err);
+			}
+			callback();
+		});
+	}
+
+	var unbox = function(source,options,callback) {
+		var targets = [];
+		var target = null;
+
 		var done = function(err) {
 			if (!options.silent) console.log("  Done.");
 			cleanAll(function(){
@@ -391,38 +454,13 @@
 			});
 		};
 
-		var next = function() {
+		var next = function(err) {
+			if (err) return done(err);
+
 			target = targets.shift();
 			if (!target) return done();
 
-			install();
-		};
-
-		var install = function() {
-			if (!options.silent) console.log("  Installing "+target+"...");
-
-			if (target.match(/^file:/)) {
-				// This is a target that was originally included via a local path or network-based name (URL, git ID).
-				// Move the cached package out of the cache before installing, because otherwise `npm` will have trouble
-				// figuring out what to do. (It doesn't like being asked to install from cache paths.)
-				var parts = target.match(/^file:((.+)-(.+)\.tgz)$/);
-				var fullName = parts[1];
-				var name = parts[2];
-				var version = parts[3];
-				target = path.resolve(work,fullName);
-				fs.renameSync(path.resolve(cache,name,version,"package.tgz"),target);
-				target = "file:"+target;
-			}
-
-			npmInstall(target,function(err){
-				if (err) {
-					if (!options.silent) console.log("An error occurred while installing "+target+".");
-					if (!options.silent) console.log(target+" was not installed.");
-					if (options.verbose) console.log(err);
-					return done();
-				}
-				next();
-			});
+			installPackage(target,options,next);
 		};
 
 		var getTargets = function() {
@@ -448,42 +486,33 @@
 			});
 		};
 
-		var unpack = function() {
-			if (!options.silent) console.log("  Unpacking "+source+"...");
-
-			// `dirname` to go up one layer because the top level of the box
-			// archive is `.npmbox.cache`.
-			tarExtract(source,path.dirname(cache),function(err){
-				if (err) {
-					var packageName = path.basename(target);
-					if (!options.silent) console.log("An error occurred while unpacking "+packageName+".");
-					if (!options.silent) console.log(packageName+" was not installed.");
-					if (options.verbose) console.log(err);
-					return done();
-				}
+		var doUnpack = function(err) {
+			if (err) return done(err);
+			unpack(source,options,function(err){
+				if (err) return done(err);
 				getTargets();
 			});
 		};
 
-		var init = function () {
-			options.cache = cache;
-			options.loglevel = options.verbose ? "verbose" : "silent";
-			options.progress = false;
-			options.color = false;
-			options["ignore-scripts"] = true;
-			options["cache-min"] = 1000 * 365.25 * 24 * 60 * 60; // a thousand years
-			options["fetch-retries"] = 0;
-			options["fetch-retry-factor"] = 0;
-			options["fetch-retry-mintimeout"] = 1;
-			options["fetch-retry-maxtimeout"] = 2;
+		npmInitForUnbox(options,doUnpack);
+	};
 
-			npmInit(options,function(err){
-				if (err) return done(err);
-				unpack();
+	// Installs a single package, assuming that the cache has already been
+	// set up. This supports the `--install` option to `npmunbox`.
+	var install = function(target,options,callback) {
+		var done = function(err) {
+			if (!options.silent) console.log("  Done.");
+			cleanAll(function(){
+				callback(err);
 			});
 		};
 
-		init();
+		var doInstall = function(err) {
+			if (err) return done(err);
+			installPackage(target,options,done);
+		};
+
+		npmInitForUnbox(options,doInstall);
 	};
 
 	var cleanup = function(callback) {
@@ -495,6 +524,8 @@
 	module.exports = {
 		box: box,
 		unbox: unbox,
+		unpack: unpack,
+		install: install,
 		cleanup: cleanup
 	};
 
