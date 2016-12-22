@@ -12,10 +12,17 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## npmbox news
 
+UPDATE for v.next.
+  * Support for accepting a `package.json` file when boxing. This will cause its
+    dependencies to get boxed.
+  * Start using a temporary directory instead of the CWD for temporary files and
+    directories. **Note:** This fixes the problem noted in v4.1.0 whereby
+    `npmbox` of the current directory would fail.
+
 UPDATE December 21, 2016: v4.1.0 of npmbox is out.
   * Support for running npmbox on a top-level local package, e.g.
     `npmbox path/to/my/package`. **Note:** You cannot be `cd`ed to the directory
-    to box. (That is, `npmbox .` won't work.) This may be addressed in a future
+    to box. (That is, `npmbox .` won't work.) This is addressed in a future
     version.
 
 UPDATE December 20, 2016: v4.0.2 of npmbox is out.
