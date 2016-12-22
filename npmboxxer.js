@@ -12,12 +12,22 @@
 	var path = require("path");
 	var readJson = require("read-package-json");
 	var targz = require("tar.gz");
+	var tmp = require("tmp");
 	var is = require("is");
 	var npa = require("npm-package-arg");
 
-	var cwd = process.cwd();
-	var work = path.resolve(cwd,".npmbox.work");
-	var cache = path.resolve(cwd,".npmbox.cache");
+	// Tell the `tmp` package to try to delete temporary files even when the
+	// process exits with an error.
+	tmp.setGracefulCleanup();
+
+	// Make the main temporary directory and two subdirectories for box contents
+	// and additional workspace (respectively). `unsafeCleanup` just means that
+	// the directory should be removed on process exit even if it's not empty.
+	var tmpDir = tmp.dirSync({prefix: "npmbox-", unsafeCleanup: true});
+	var cache = path.resolve(tmpDir.name,"cache",".npmbox.cache");
+	var work = path.resolve(tmpDir.name,"work");
+	fsx.mkdirsSync(work);
+	fsx.mkdirsSync(cache);
 
 	// This takes an install target (typically a simple package name, but
 	// sometimes a path or a general URL) and converts it into a form that is
@@ -34,33 +44,9 @@
 		return decodeURIComponent(encoded);
 	}
 
-	var cleanCache = function(callback) {
-		process.chdir(cwd);
-
-		var wait = function() {
-			if (fs.existsSync(cache)) {
-				setTimeout(wait,100);
-			}
-			else callback();
-		};
-
-		if (fs.existsSync(cache)) fsx.remove(cache,wait);
-		else callback();
-	};
-
-	var cleanWork = function(callback) {
-		process.chdir(cwd);
-
-		if (fs.existsSync(work)) fsx.remove(work,callback);
-		else callback();
-	};
-
 	var cleanAll = function(callback) {
-		cleanCache(function(){
-			cleanWork(function(){
-				callback();
-			});
-		});
+		if (fs.existsSync(tmpDir.name)) fsx.remove(tmpDir.name,callback);
+		else callback();
 	};
 
 	// Given a key/value pair from a dependency map (e.g. in a `package.json`
@@ -102,8 +88,8 @@
 		var checkIfDone = function(err) {
 			if (err) return callback(err);
 
-			var totalSize = 0; // Total size of all files in the cache.
-			fsx.walk(cache)
+			var totalSize = 0; // Total size of all files in the target dir.
+			fsx.walk(target)
 				.on("readable",function(){
 					for (;;) {
 						var item = this.read();
@@ -374,13 +360,6 @@
 
 			npmInit(npmoptions,function(err){
 				if (err) return done(err);
-
-				if (fs.existsSync(cache)) {
-					callback("An .npmbox.cache folder already exist and might conflict.  Please remove it first or work from a different directory.");
-					return;
-				}
-				fs.mkdirSync(cache);
-
 				next();
 			});
 		};
@@ -404,8 +383,6 @@
 				return;
 			}
 		}
-
-		if (!fs.existsSync(cache)) fs.mkdirSync(cache);
 
 		var done = function(err) {
 			if (!options.silent) console.log("  Done.");
@@ -433,7 +410,6 @@
 				var name = parts[2];
 				var version = parts[3];
 				target = path.resolve(work,fullName);
-				fs.mkdirSync(work); // We only create the `work` directory when needed.
 				fs.renameSync(path.resolve(cache,name,version,"package.tgz"),target);
 				target = "file:"+target;
 			}
@@ -475,7 +451,9 @@
 		var unpack = function() {
 			if (!options.silent) console.log("  Unpacking "+source+"...");
 
-			tarExtract(source,".",function(err){
+			// `dirname` to go up one layer because the top level of the box
+			// archive is `.npmbox.cache`.
+			tarExtract(source,path.dirname(cache),function(err){
 				if (err) {
 					var packageName = path.basename(target);
 					if (!options.silent) console.log("An error occurred while unpacking "+packageName+".");
