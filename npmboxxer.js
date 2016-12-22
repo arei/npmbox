@@ -26,8 +26,8 @@
 	var tmpDir = tmp.dirSync({prefix: "npmbox-", unsafeCleanup: true});
 	var cache = path.resolve(tmpDir.name,"cache",".npmbox.cache");
 	var work = path.resolve(tmpDir.name,"work");
-	fsx.mkdirsSync(work);
 	fsx.mkdirsSync(cache);
+	fsx.mkdirsSync(work);
 
 	// This takes an install target (typically a simple package name, but
 	// sometimes a path or a general URL) and converts it into a form that is
