@@ -18,6 +18,10 @@ UPDATE for v.next.
   * Start using a temporary directory instead of the CWD for temporary files and
     directories. **Note:** This fixes the problem noted in v4.1.0 whereby
     `npmbox` of the current directory would fail.
+  * New unbox option `--install=<pkg>` to install any package while using the
+    box contents for dependencies. This can be used to install a local package
+    (from the filesystem) while using a box for dependencies, e.g.
+    `cd path/to/my/package; npmunbox --install=. path/to/box.npmbox`
 
 UPDATE December 21, 2016: v4.1.0 of npmbox is out.
   * Support for running npmbox on a top-level local package, e.g.
@@ -83,6 +87,7 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
         -v, --verbose         Shows npm output which is normally hidden.
         -s, --silent          Shows additional output which is normally hidden.
         -p, --path            Specify the path to a folder from which the .npmbox file(s) will be read.
+        -i, --install=<pkg>   Installs the indicated package instead of using the .npmbox manifest.
         -g, --global          Installs package globally as if --global was passed to npm.
         -C, --prefix          npm --prefix switch.
         -S, --save            npm --save switch.
@@ -90,7 +95,6 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
         -O, --save-optional   npm --save-optional switch.
         -B, --save-bundle     npm --save-bundle switch.
         -E, --save-exact      npm --save-exact switch.
-
 
 You must specify at least one file.
 
