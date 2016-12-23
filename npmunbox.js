@@ -26,11 +26,14 @@ var argv = require("optimist")
 		alias: "path",
 		default: process.cwd()
 	})
+	.options("i", {
+		alias: "install"
+	})
 	.argv;
 
 var args = argv._;
 if (args.length<1 || argv.help) {
-	console.log("npmunbox - Extracts a .npmbox file and installs the contained package.");
+	console.log("npmunbox - Extracts one or more .npmbox files and installs the contained package(s).");
 	console.log("");
 	console.log("Usage: ");
 	console.log("");
@@ -42,7 +45,8 @@ if (args.length<1 || argv.help) {
 	console.log("  -v, --verbose         Shows npm output which is normally hidden.");
 	console.log("  -s, --silent          Hide all output.");
 	console.log("  -p, --path            Specify the path to a folder from which the .npmbox file(s) will be read.");
-	console.log("  -g, --global          Installs package globally as if --global was passed to npm.");
+	console.log("  -i, --install=<pkg>   Installs the indicated package instead of using the .npmbox manifest.");
+	console.log("  -g, --global          Installs package(s) globally as if --global was passed to npm.");
 	console.log("  -C, --prefix          npm --prefix switch.");
 	console.log("  -S, --save            npm --save switch.");
 	console.log("  -D, --save-dev        npm --save-dev switch.");
@@ -66,8 +70,10 @@ var options = {
 };
 if (argv.C || argv.prefix) options.prefix = argv.C || argv.prefix;
 
-var sources = args;
 var errorCount = 0;
+var sources = args.filter(function(source){
+	return !!source;
+});
 
 var complete = function() {
 	boxxer.cleanup(function(){
@@ -75,32 +81,67 @@ var complete = function() {
 	});
 };
 
-var unboxDone = function(err) {
-	if (err) {
-		var args = utils.flatten(utils.toArray(arguments));
-		args.forEach(function(arg){
-			errorCount += 1;
-			console.error(" ",arg);
-		});
-	}
+var reportErrors = function(args) {
+	args.forEach(function(arg){
+		errorCount += 1;
+		console.error(" ",arg);
+	});
+}
+
+// Handles the case where we pay attention to the manifests inside the box(es).
+var unboxFromManifest = function() {
+	var unboxDone = function(err) {
+		if (err) reportErrors(utils.flatten(utils.toArray(arguments)));
+		unboxNext();
+	};
+
+	var unboxNext = function() {
+		var source = sources.shift();
+		if (!source) return complete();
+
+		unboxExecute(source);
+	};
+
+	var unboxExecute = function(source) {
+		if (!options.silent) console.log("\nUnboxing "+source+"...");
+		boxxer.unbox(source,options,unboxDone);
+	};
+
 	unboxNext();
-};
+}
 
-var unboxNext = function() {
-	var source = sources.shift();
-	if (!source) return complete();
+// Handles the case where we are installing a package listed via the `--install`
+// option. This unpacks all the boxes (on top of each other) and then does a
+// single `npm install`.
+var unboxWithInstallOption = function(pkg) {
+	var installDone = function(err) {
+		if (err) reportErrors(utils.flatten(utils.toArray(arguments)));
+		complete();
+	};
 
-	unboxExecute(source);
-};
+	var unpackDone = function(err) {
+		if (err) {
+			reportErrors(utils.flatten(utils.toArray(arguments)));
+			return complete();
+		}
+		unpackNext();
+	};
 
-var unboxExecute = function(source) {
-	if (!options.silent) console.log("\nUnboxing "+source+"...");
-	boxxer.unbox(source,options,unboxDone);
-};
+	var unpackNext = function() {
+		var source = sources.shift();
+		if (source) unpackExecute(source);
+		else {
+			boxxer.install(pkg,options,installDone);
+		}
+	};
 
-sources = sources.filter(function(source){
-	return !!source;
-});
+	var unpackExecute = function(source) {
+		boxxer.unpack(source,options,unpackDone);
+	};
 
-if (sources && sources.length>0) unboxNext();
-else complete();
+	unpackNext();
+}
+
+if (sources.length===0) return complete();
+else if (argv.install) unboxWithInstallOption(argv.install);
+else unboxFromManifest();
