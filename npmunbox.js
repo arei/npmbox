@@ -10,7 +10,9 @@ var utils = require("./utils");
 
 var argv = require("optimist")
 	.string([
-		"C","prefix"
+		"C","prefix",
+		"proxy",
+		"https-proxy"
 	])
 	.boolean([
 		"v","verbose",
@@ -55,6 +57,8 @@ if (args.length<1 || argv.help) {
 	console.log("  -O, --save-optional   npm --save-optional switch.");
 	console.log("  -B, --save-bundle     npm --save-bundle switch.");
 	console.log("  -E, --save-exact      npm --save-exact switch.");
+	console.log("  --proxy=<url>         npm --proxy switch.");
+	console.log("  --https-proxy=<url>   npm --https-proxy switch.");
 	console.log("");
 	process.exit(0);
 }
@@ -72,6 +76,8 @@ var options = {
 	path: argv.p || argv.path || false
 };
 if (argv.C || argv.prefix) options.prefix = argv.C || argv.prefix;
+if (argv.proxy) options.proxy = argv.proxy;
+if (argv["https-proxy"]) options["https-proxy"] = argv["https-proxy"];
 
 var errorCount = 0;
 var sources = args.filter(function(source){

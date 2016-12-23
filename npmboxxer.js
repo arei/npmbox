@@ -357,6 +357,8 @@
 				"ignore-scripts": true,
 				loglevel: options && options.verbose ? "http" : "silent"
 			};
+			if (options.proxy) npmoptions.proxy = options.proxy;
+			if (options["https-proxy"]) npmoptions["https-proxy"] = options["https-proxy"];
 
 			npmInit(npmoptions,function(err){
 				if (err) return done(err);

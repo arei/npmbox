@@ -24,6 +24,10 @@ UPDATE for v.next.
     `cd path/to/my/package; npmunbox --install=. path/to/box.npmbox`
   * New unbox option `--scripts` to enable running of scripts. (By default,
     npmbox acts like `--ignore-scripts` was specified.)
+  * New options `--proxy` and `--https-proxy` which pass through to the
+    underlying `npm` invocation. Works on both `npmbox` and `npmunbox`. In the
+    latter case, this can help prevent unboxing from inadvertently hitting the
+    network (by specifying nonexistent proxies).
 
 UPDATE December 21, 2016: v4.1.0 of npmbox is out.
   * Support for running npmbox on a top-level local package, e.g.
@@ -59,6 +63,8 @@ Given some package, like `express` this command will create a archive file of th
         -v, --verbose         Shows npm output which is normally hidden.
         -s, --silent          Shows no output whatsoever.
         -t, --target          Specify the .npmbox file to write.
+        --proxy=<url>         npm --proxy switch.
+        --https-proxy=<url>   npm --https-proxy switch.
 
 You must specify at least one package. Packages can be anything accepted as
 an argument to `npm install`, and can also be a local path to a `.json` file,
@@ -98,6 +104,8 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
         -O, --save-optional   npm --save-optional switch.
         -B, --save-bundle     npm --save-bundle switch.
         -E, --save-exact      npm --save-exact switch.
+        --proxy=<url>         npm --proxy switch.
+        --https-proxy=<url>   npm --https-proxy switch.
 
 You must specify at least one file.
 
