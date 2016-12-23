@@ -16,6 +16,7 @@ var argv = require("optimist")
 		"v","verbose",
 		"s","silent",
 		"g","global",
+		"scripts",
 		"S","save",
 		"D","save-dev",
 		"O","save-optional",
@@ -46,6 +47,7 @@ if (args.length<1 || argv.help) {
 	console.log("  -s, --silent          Hide all output.");
 	console.log("  -p, --path            Specify the path to a folder from which the .npmbox file(s) will be read.");
 	console.log("  -i, --install=<pkg>   Installs the indicated package instead of using the .npmbox manifest.");
+	console.log("  --scripts             Enable running of scripts during installation.");
 	console.log("  -g, --global          Installs package(s) globally as if --global was passed to npm.");
 	console.log("  -C, --prefix          npm --prefix switch.");
 	console.log("  -S, --save            npm --save switch.");
@@ -66,6 +68,7 @@ var options = {
 	"save-optional": argv.O || argv["save-optional"] || false,
 	"save-bundle": argv.B || argv["save-bundle"] || false,
 	"save-exact": argv.E || argv["save-exact"] || false,
+	"ignore-scripts": !argv.scripts,
 	path: argv.p || argv.path || false
 };
 if (argv.C || argv.prefix) options.prefix = argv.C || argv.prefix;

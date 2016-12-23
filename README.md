@@ -22,6 +22,8 @@ UPDATE for v.next.
     box contents for dependencies. This can be used to install a local package
     (from the filesystem) while using a box for dependencies, e.g.
     `cd path/to/my/package; npmunbox --install=. path/to/box.npmbox`
+  * New unbox option `--scripts` to enable running of scripts. (By default,
+    npmbox acts like `--ignore-scripts` was specified.)
 
 UPDATE December 21, 2016: v4.1.0 of npmbox is out.
   * Support for running npmbox on a top-level local package, e.g.
@@ -88,6 +90,7 @@ Given some .npmbox file (must end with the .npmbox extension), installs the cont
         -s, --silent          Shows additional output which is normally hidden.
         -p, --path            Specify the path to a folder from which the .npmbox file(s) will be read.
         -i, --install=<pkg>   Installs the indicated package instead of using the .npmbox manifest.
+        --scripts             Enable running of scripts during installation.
         -g, --global          Installs package globally as if --global was passed to npm.
         -C, --prefix          npm --prefix switch.
         -S, --save            npm --save switch.
