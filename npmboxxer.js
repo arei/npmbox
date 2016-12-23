@@ -357,6 +357,8 @@
 				"ignore-scripts": true,
 				loglevel: options && options.verbose ? "http" : "silent"
 			};
+			if (options.proxy) npmoptions.proxy = options.proxy;
+			if (options["https-proxy"]) npmoptions["https-proxy"] = options["https-proxy"];
 
 			npmInit(npmoptions,function(err){
 				if (err) return done(err);
@@ -404,7 +406,6 @@
 		options.loglevel = options.verbose ? "verbose" : "silent";
 		options.progress = false;
 		options.color = false;
-		options["ignore-scripts"] = true;
 		options["cache-min"] = 1000 * 365.25 * 24 * 60 * 60; // a thousand years
 		options["fetch-retries"] = 0;
 		options["fetch-retry-factor"] = 0;

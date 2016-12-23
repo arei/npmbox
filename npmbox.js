@@ -8,6 +8,10 @@
 var boxxer = require("./npmboxxer.js");
 
 var argv = require("optimist")
+	.string([
+		"proxy",
+		"https-proxy"
+	])
 	.boolean(["v","verbose","s","silent"])
 	.options("t", {
 		alias: "target",
@@ -29,6 +33,8 @@ if (args.length<1 || argv.help) {
 	console.log("  -v, --verbose         Shows additional output which is normally hidden.");
 	console.log("  -s, --silent          Hide all output.");
 	console.log("  -t, --target          Specify the target .npmbox file to write.");
+	console.log("  --proxy=<url>         npm --proxy switch.");
+	console.log("  --https-proxy=<url>   npm --https-proxy switch.");
 	console.log("");
 	process.exit(0);
 }
@@ -36,7 +42,9 @@ if (args.length<1 || argv.help) {
 var options = {
 	verbose: argv.v || argv.verbose || false,
 	silent: argv.s || argv.silent || false,
-	target: argv.t || argv.target || null
+	target: argv.t || argv.target || null,
+	proxy: argv.proxy || null,
+	"https-proxy": argv["https-proxy"] || null
 };
 
 var sources = args;

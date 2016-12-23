@@ -10,12 +10,15 @@ var utils = require("./utils");
 
 var argv = require("optimist")
 	.string([
-		"C","prefix"
+		"C","prefix",
+		"proxy",
+		"https-proxy"
 	])
 	.boolean([
 		"v","verbose",
 		"s","silent",
 		"g","global",
+		"scripts",
 		"S","save",
 		"D","save-dev",
 		"O","save-optional",
@@ -46,6 +49,7 @@ if (args.length<1 || argv.help) {
 	console.log("  -s, --silent          Hide all output.");
 	console.log("  -p, --path            Specify the path to a folder from which the .npmbox file(s) will be read.");
 	console.log("  -i, --install=<pkg>   Installs the indicated package instead of using the .npmbox manifest.");
+	console.log("  --scripts             Enable running of scripts during installation.");
 	console.log("  -g, --global          Installs package(s) globally as if --global was passed to npm.");
 	console.log("  -C, --prefix          npm --prefix switch.");
 	console.log("  -S, --save            npm --save switch.");
@@ -53,6 +57,8 @@ if (args.length<1 || argv.help) {
 	console.log("  -O, --save-optional   npm --save-optional switch.");
 	console.log("  -B, --save-bundle     npm --save-bundle switch.");
 	console.log("  -E, --save-exact      npm --save-exact switch.");
+	console.log("  --proxy=<url>         npm --proxy switch.");
+	console.log("  --https-proxy=<url>   npm --https-proxy switch.");
 	console.log("");
 	process.exit(0);
 }
@@ -66,9 +72,12 @@ var options = {
 	"save-optional": argv.O || argv["save-optional"] || false,
 	"save-bundle": argv.B || argv["save-bundle"] || false,
 	"save-exact": argv.E || argv["save-exact"] || false,
+	"ignore-scripts": !argv.scripts,
 	path: argv.p || argv.path || false
 };
 if (argv.C || argv.prefix) options.prefix = argv.C || argv.prefix;
+if (argv.proxy) options.proxy = argv.proxy;
+if (argv["https-proxy"]) options["https-proxy"] = argv["https-proxy"];
 
 var errorCount = 0;
 var sources = args.filter(function(source){
