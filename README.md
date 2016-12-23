@@ -12,7 +12,7 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## npmbox news
 
-UPDATE for v.next.
+UPDATE December 22, 2016: v4.2.0 of npmbox is out.
   * Support for accepting a `package.json` file when boxing. This will cause its
     dependencies to get boxed.
   * Start using a temporary directory instead of the CWD for temporary files and
