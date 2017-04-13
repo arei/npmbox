@@ -340,7 +340,7 @@
 				});
 			}
 			else {
-				if (!target) setTarget(npa(source).name);
+				if (!target) setTarget(npa(source).escapedName);  // escapedName is necessary to support scoped packages
 				rack(source);
 			}
 		};
