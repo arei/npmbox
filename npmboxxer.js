@@ -35,14 +35,14 @@
 	// including a `.npmbox` suffix.
 	var encodeTarget = function(target) {
 		return encodeURIComponent(target)+".npmbox";
-	}
+	};
 
 	// This reverses the action of `encodeTarget()`, and also strips away the
 	// directory prefix.
 	var decodeTarget = function(encoded) {
 		encoded = path.basename(encoded).replace(/\.npmbox$/, "");
 		return decodeURIComponent(encoded);
-	}
+	};
 
 	var cleanAll = function(callback) {
 		if (fs.existsSync(tmpDir.name)) fsx.remove(tmpDir.name,callback);
@@ -58,7 +58,7 @@
 		var parsed = npa(value); // We use npm's own mechanism to decide.
 		if (parsed.name===null) return key+"@"+value;
 		else return value;
-	}
+	};
 
 	// Given a dependency map (e.g. from a `package.json` file), return a list
 	// of the full dependency names. Returns an empty list if given `null`.
@@ -70,7 +70,7 @@
 			result.push(fixDependency(k,depMap[k]));
 		}
 		return result;
-	}
+	};
 
 	var tarCreate = function(source,target,callback) {
 		new targz().compress(source,target,callback);
@@ -390,7 +390,7 @@
 		// archive is `.npmbox.cache`.
 		tarExtract(source,path.dirname(cache),function(err){
 			if (err) {
-				var packageName = path.basename(target);
+				// var packageName = path.basename(target);
 				if (!options.silent) console.log("An error occurred while unpacking "+source+".");
 				if (!options.silent) console.log(source+" was not processed.");
 				if (options.verbose) console.log(err);
