@@ -12,6 +12,10 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## npmbox news
 
+UPDATE April 19, 2017: v4.2.1 of npmbox is out.
+  * Escapes package names with forward slash characters. #86
+  * Minor linting changes.
+
 UPDATE December 22, 2016: v4.2.0 of npmbox is out.
   * Support for accepting a `package.json` file when boxing. This will cause its
     dependencies to get boxed.
@@ -28,22 +32,6 @@ UPDATE December 22, 2016: v4.2.0 of npmbox is out.
     underlying `npm` invocation. Works on both `npmbox` and `npmunbox`. In the
     latter case, this can help prevent unboxing from inadvertently hitting the
     network (by specifying nonexistent proxies).
-
-UPDATE December 21, 2016: v4.1.0 of npmbox is out.
-  * Support for running npmbox on a top-level local package, e.g.
-    `npmbox path/to/my/package`. **Note:** You cannot be `cd`ed to the directory
-    to box. (That is, `npmbox .` won't work.) This is addressed in a future
-    version.
-
-UPDATE December 20, 2016: v4.0.2 of npmbox is out.
-  * Fix a couple issues which could cause npmbox to incorrectly try to use the
-    network.
-  * Support for top-level install targets that aren't simple npm package names.
-
-UPDATE August 9, 2016: v4.0.0 of npmbox is out.
-  * Support for bundling multiple packages into a single .npmbox file! (Hooray!)
-  * Roll back version of tar.gz lib to solve large tar file bug.
-  * Fix error where npmbox would not give an error on a failure.
 
 Also worthy of note is that npm, inc. has begun thinking and working in how to do this within npm itself (and hopefully obsoleting this project entirely).  There's a good blog post over at npm, inc called "dealing with problematic dependencies in a restricted network environment" that details some of the problems: [Check it out here!](http://blog.npmjs.org/post/145724408060/dealing-with-problematic-dependencies-in-a)
 
