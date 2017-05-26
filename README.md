@@ -12,6 +12,13 @@ npmbox is intended to be a proof of concept with regards to this issue filled ag
 
 ## npmbox news
 
+BREAKING CHANGE May 26, 2017: npm 5 will break npmbox
+  * **WARNING! npm v5 is not compatable with npmbox**. 
+  * Unfortuantely, this means npmbox will not work with npm v5 or later.
+  * npmbox will get fixed, eventually, but until one of us gets time to fix it npmbox/npm5 will remiain broken.
+  * The npm v5 changes are actually really good news for npmbox though, so hopefully a new version in the not so distant future with some really nice changes.
+  * Read the npm v5 release notes here: ([npm5 release notes](http://blog.npmjs.org/post/161081169345/v500))
+
 UPDATE April 19, 2017: v4.2.1 of npmbox is out.
   * Escapes package names with forward slash characters. #86
   * Minor linting changes.
