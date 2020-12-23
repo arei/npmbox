@@ -11,7 +11,7 @@
 	var fsx = require("fs-extra");
 	var path = require("path");
 	var readJson = require("read-package-json");
-	var targz = require("tar.gz");
+	var targz = require("targz");
 	var tmp = require("tmp");
 	var is = require("is");
 	var npa = require("npm-package-arg");
@@ -73,48 +73,27 @@
 	};
 
 	var tarCreate = function(source,target,callback) {
-		new targz().compress(source,target,callback);
+
+		console.log({source,target})
+
+		targz.compress({
+			src: source,
+			dest: target
+		}, function(err){
+			callback(err)
+		});
 	};
 
 	var tarExtract = function(source,target,callback) {
-		// Unfortunately, the `tar.gz` package at v1.0.2 will sometimes make its
-		// callback before it's done extracting all the files, but _later_
-		// versions of the package have other bugs that prevent extraction from
-		// working at all. What we do here is keep checking the contents of the
-		// directory (recursive walk) until they settle.
 
-		var prevSize = -1; // Total size we found on the most recent iteration.
+		console.log({source,target})
 
-		var checkIfDone = function(err) {
-			if (err) return callback(err);
-
-			var totalSize = 0; // Total size of all files in the target dir.
-			fsx.walk(target)
-				.on("readable",function(){
-					for (;;) {
-						var item = this.read();
-						if (!item) break;
-						totalSize += item.stats.isFile() ? item.stats.size : 1;
-					}
-				})
-				.on("end",function(){
-					if (totalSize === prevSize) {
-						// Contents have not changed in size since the previous
-						// iteration. Done!
-						callback();
-					} else {
-						// Contents have changed. Note the new size, delay a
-						// moment, and then check again.
-						prevSize = totalSize;
-						setTimeout(checkIfDone,250);
-					}
-				})
-				.on("error",function(err){
-					return callback(err);
-				});
-		};
-
-		new targz().extract(source,target,checkIfDone);
+		targz.decompress({
+			src: source,
+			dest: target
+		}, function(err){
+			callback(err)
+		});
 	};
 
 	var npmInit = function(options,callback) {
