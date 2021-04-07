@@ -3,6 +3,9 @@
 [![NPM](https://nodei.co/npm/npmbox.png)](https://nodei.co/npm/npmbox/)
 
 -------
+**DEPRECATED** I am officially deprecating this entire package. It has been a extremely long time since this got any attention at all and I no longer have any idea if it works on npm > v5 or not, nor do I have plans to try and figure it out if not.
+
+-------
 
 ## What is npmbox?
 
