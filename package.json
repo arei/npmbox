@@ -60,7 +60,7 @@
     "npm-package-arg": "4.2.0",
     "optimist": "0.6.1",
     "read-package-json": "2.0.4",
-    "tar.gz": "1.0.2",
+    "targz": "^1.0.1",
     "tmp": "0.0.31"
   },
   "devDependencies": {},
